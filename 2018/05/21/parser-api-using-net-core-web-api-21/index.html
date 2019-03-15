@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article explains how to create generic parser API to parse video feeds from various sites that supports RSS/Atom feed or scraping the content from DOM element and return the custom XML / JSON out">
+<meta name="keywords" content="Raspberry PI,.Net Core">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Parser API using .Net Core Web API 2.1 and Hosting in Raspberry PI">
+<meta property="og:url" content="https://jeevasubburaj.com/2018/05/21/parser-api-using-net-core-web-api-21/index.html">
+<meta property="og:site_name" content="Jeeva Subburaj - Programmer, Blogger">
+<meta property="og:description" content="This article explains how to create generic parser API to parse video feeds from various sites that supports RSS/Atom feed or scraping the content from DOM element and return the custom XML / JSON out">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-A3KaM_0VZlY/WwDlqIPMEbI/AAAAAAAGr4U/q5HHRNobez86h_elK-tS_EHd0f4TWhF8ACHMYCw/image_thumb%255B3%255D?imgmax=800">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-cSIsG5S_7Gs/WwLu7ClH8_I/AAAAAAAGsBc/Kmn4UR7fgisUeCGgzxWwT5YAc3SZz8dHwCHMYCw/image_thumb%255B26%255D?imgmax=800">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-g6IN63trdm8/WwLafo4A2HI/AAAAAAAGsAY/h9OV9A0nl7Ebd9Ixx2auMfiP9mCtK2ARQCHMYCw/image_thumb%255B8%255D?imgmax=800">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-FJC_v1OXIlY/WwLajnEUdlI/AAAAAAAGsAg/6RUPaW7VCxs45WeskSsBzugnHjc7rAuQwCHMYCw/image_thumb%255B15%255D?imgmax=800">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-igCwOkjMI3M/WwLaoCuCVZI/AAAAAAAGsAo/cnstEC0xtNYLWJwDEiwJ-dqUoG7IruQ0QCHMYCw/image_thumb%255B17%255D?imgmax=800">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-ePdk_TWssM8/WwLarvgNWxI/AAAAAAAGsAw/bOaqIelfUjA5LArEUf9WVfKZTTckT-QVwCHMYCw/image_thumb%255B19%255D?imgmax=800">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-gCvGQQl386Q/WwLaw85koOI/AAAAAAAGsA8/VpSdYi0AUK4t5alSOStRSCEGhueYSc_2ACHMYCw/image_thumb%255B23%255D?imgmax=800">
+<meta property="og:image" content="https://lh3.googleusercontent.com/-30WIS4h_zkY/WwLayxJuG7I/AAAAAAAGsBA/0CuhttLO3_4Ia3UcnZ1l8McxUnCkd5twQCHMYCw/wlEmoticon-smile%255B2%255D?imgmax=800">
+<meta property="og:updated_time" content="2019-03-15T17:33:08.680Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Parser API using .Net Core Web API 2.1 and Hosting in Raspberry PI">
+<meta name="twitter:description" content="This article explains how to create generic parser API to parse video feeds from various sites that supports RSS/Atom feed or scraping the content from DOM element and return the custom XML / JSON out">
+<meta name="twitter:image" content="https://lh3.googleusercontent.com/-A3KaM_0VZlY/WwDlqIPMEbI/AAAAAAAGr4U/q5HHRNobez86h_elK-tS_EHd0f4TWhF8ACHMYCw/image_thumb%255B3%255D?imgmax=800">
+
+
+
+
+
+
+  <link rel="canonical" href="https://jeevasubburaj.com/2018/05/21/parser-api-using-net-core-web-api-21/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Parser API using .Net Core Web API 2.1 and Hosting in Raspberry PI | Jeeva Subburaj - Programmer, Blogger</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jeeva Subburaj - Programmer, Blogger</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://jeevasubburaj.com/2018/05/21/parser-api-using-net-core-web-api-21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeeva Subburaj">
+      <meta itemprop="description" content="Programmer, Blogger">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jeeva Subburaj - Programmer, Blogger">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Parser API using .Net Core Web API 2.1 and Hosting in Raspberry PI
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-21 13:12:00" itemprop="dateCreated datePublished" datetime="2018-05-21T13:12:00-04:00">2018-05-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-03-15 13:33:08" itemprop="dateModified" datetime="2019-03-15T13:33:08-04:00">2019-03-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2018/05/21/parser-api-using-net-core-web-api-21/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/21/parser-api-using-net-core-web-api-21/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>This article explains how to create generic parser API to parse video feeds from various sites that supports RSS/Atom feed or scraping the content from DOM element and return the custom XML / JSON output based on requested streaming box supported format. The core parsing logic will be implemented in base class and then custom formatting logic will be implemented in the appropriate child classes. Later in the article, we will also deploy this application into Raspian based Raspberry PI. We are using the latest .Net Core SDk 2.1 RC release for developing the web API. In my earlier <a href="http://www.jeevasubburaj.com/2018/03/how-to-build-personal-web-server-using.html" target="_blank" rel="noopener">article</a> , i developed the similar application using NodeJS and Express and deployed in Raspberry PI.  </p>
+<a id="more"></a>
+<h2 id="Design"><a href="#Design" class="headerlink" title="Design"></a>Design</h2><p>The below diagram depicts the architecture of Model and Service Components. In this article, i have added only for feed based service and i will be adding to support DOM based extraction later and publish it into <a href="https://github.com/vavjeeva/VideoParserAPI/" target="_blank" rel="noopener">github</a>.  </p>
+<h2 id="Model-Class-Diagram"><a href="#Model-Class-Diagram" class="headerlink" title="Model Class Diagram"></a>Model Class Diagram</h2><p><img src="https://lh3.googleusercontent.com/-A3KaM_0VZlY/WwDlqIPMEbI/AAAAAAAGr4U/q5HHRNobez86h_elK-tS_EHd0f4TWhF8ACHMYCw/image_thumb%255B3%255D?imgmax=800" alt="image"></p>
+<p><strong>IParserModel</strong> - Interface for the model.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IParserModel</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">string</span> RawContent &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;       </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>BaseParserModel</strong> – Base class for the Parser Mode. RawContent will holds the Raw content of feed or DOM.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FeedBaseParserModel</span> : <span class="title">BaseParserModel</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">XmlIgnore</span>]</span><br><span class="line">        <span class="keyword">public</span> List&lt;isyndicationitem&gt; SyndicationItems &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p> <strong>RokuParserModel</strong> – This is the root class for Roku which holds all the properties and subclasses that are expected for Roku Streaming Box. I will be adding  <strong>AndroidParserModel</strong> and <strong>IOSParserModel</strong> in future to support other streaming boxes. The RokuParserModel also have sub classes to hold other properties such video URL and ThumbnailURL. This can be customized in whatever way our streaming box expects the model to be.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">XmlRoot(ElementName =<span class="meta-string">"Feed"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RokuFeedParserModel</span> : <span class="title">FeedBaseParserModel</span></span><br><span class="line">    &#123;        </span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> ResultLength &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> EndIndex &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;      </span><br><span class="line">        [<span class="meta">XmlElement(ElementName =<span class="meta-string">"Item"</span>)</span>]</span><br><span class="line">        <span class="keyword">public</span> List&lt;rokuparseritem&gt; ParserItems &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    [<span class="meta">XmlRoot(ElementName = <span class="meta-string">"Item"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RokuParserItem</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> Title &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> ContentId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> StreamFormat &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> Synopsis &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlAttribute</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> SdImg &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlAttribute</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> HdImg &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlAttribute</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> ThumbnailURL &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> RokuMediaItem MediaItem &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    [<span class="meta">XmlRoot(ElementName = <span class="meta-string">"MediaItem"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RokuMediaItem</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> StreamUrl &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        [<span class="meta">XmlElement</span>]</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> ThumbnailURL &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Service-Architecture"><a href="#Service-Architecture" class="headerlink" title="Service Architecture"></a>Service Architecture</h2><p>  <img src="https://lh3.googleusercontent.com/-cSIsG5S_7Gs/WwLu7ClH8_I/AAAAAAAGsBc/Kmn4UR7fgisUeCGgzxWwT5YAc3SZz8dHwCHMYCw/image_thumb%255B26%255D?imgmax=800" alt="image"></p>
+<p><strong>IParserService</strong> – Base Interface for Service<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface IParserService&lt;t&gt; where T : IParserModel</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">Task&lt;t&gt; <span class="title">ParseContent</span>(<span class="params"></span>)</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p> <strong>BaseParserSerivce<t></t></strong> - Abstract Layer for Paser Service Class. This will have empty virtual method for now.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public abstract class BaseParserService&lt;t&gt; : IParserService&lt;t&gt; where T : IParserModel, new()</span><br><span class="line">    &#123;       </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> <span class="keyword">virtual</span> Task&lt;t&gt; <span class="title">ParseContent</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">await</span> Task.FromResult(<span class="keyword">new</span> T());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>RokuFeedParserService</strong> – This is the service class for the Roku Format that holds all the core logic extract the content items from the feed. It takes the feedURL in constructor and override the parseContent method to implement Feed Based Parsing Service. I used the <a href="https://msdn.microsoft.com/en-us/library/system.servicemodel.syndication.syndicationfeed.aspx" target="_blank" rel="noopener">SyndicationFeed</a> library from .net to parse RSS and atom feed. The base RokuFeedParserService will parse the feed and populate the list of items in <strong>SyndicationItems</strong> Property. Later, the child class that will be inhertiing from <strong>RokuFeedParserService</strong> will use the <strong>SyndicationItems</strong> values to create custom formatted the xml / json output based on the streaming format requested.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class RokuFeedParserService : BaseParserService&lt;rokufeedparsermodel&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> FeedURL &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">RokuFeedParserService</span>(<span class="params"><span class="keyword">string</span> _feedURL</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            FeedURL = _feedURL;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> <span class="keyword">override</span> Task&lt;rokufeedparsermodel&gt; <span class="title">ParseContent</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            RokuFeedParserModel parserModel = <span class="keyword">new</span> RokuFeedParserModel() &#123; SyndicationItems = <span class="keyword">new</span> List&lt;isyndicationitem&gt;() &#125;;</span><br><span class="line">            <span class="keyword">using</span> (XmlReader xmlReader = XmlReader.Create(FeedURL, <span class="keyword">new</span> XmlReaderSettings() &#123; Async = <span class="literal">true</span> &#125;))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> reader = <span class="keyword">new</span> RssFeedReader(xmlReader);</span><br><span class="line">                <span class="keyword">while</span> (<span class="keyword">await</span> reader.Read())</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">switch</span> (reader.ElementType)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">case</span> SyndicationElementType.Item:</span><br><span class="line">                            parserModel.SyndicationItems.Add(<span class="keyword">await</span> reader.ReadItem());</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> parserModel;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p> <strong>Ch9RokuParserService</strong> – This is the child service class for Channel9 feed and it will override the parseContent method to populate RokuFeedParserModel object based on SyndicateItems values. This will return the final output of Roku based parser model object. We will be adding additional service classes for supporting other formats here.<br> <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Ch9RokuParserService</span> : <span class="title">RokuFeedParserService</span></span><br><span class="line">   &#123;</span><br><span class="line">       </span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="title">Ch9RokuParserService</span>(<span class="params"><span class="keyword">string</span> _feedURL</span>) : <span class="title">base</span>(<span class="params">_feedURL</span>)</span></span><br><span class="line"><span class="function"></span>       &#123;</span><br><span class="line">           </span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> <span class="keyword">override</span> Task&lt;rokufeedparsermodel&gt; <span class="title">ParseContent</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>       &#123;</span><br><span class="line">           <span class="keyword">var</span> parserModel = <span class="keyword">await</span> <span class="keyword">base</span>.ParseContent();</span><br><span class="line">           parserModel.ParserItems = <span class="keyword">new</span> List&lt;rokuparseritem&gt;();</span><br><span class="line">           <span class="keyword">int</span> currIndex = <span class="number">0</span>;</span><br><span class="line">           <span class="keyword">foreach</span>(<span class="keyword">var</span> syndicationItem <span class="keyword">in</span> parserModel.SyndicationItems)</span><br><span class="line">           &#123;</span><br><span class="line">               RokuParserItem parserItem = <span class="keyword">new</span> RokuParserItem();</span><br><span class="line">               parserItem.Title = syndicationItem.Title;</span><br><span class="line">               parserItem.ContentId = currIndex;</span><br><span class="line">               parserItem.StreamFormat = <span class="string">"mp4"</span>;</span><br><span class="line">               parserItem.MediaItem = <span class="keyword">new</span> RokuMediaItem();</span><br><span class="line">               parserItem.MediaItem.StreamUrl = syndicationItem.Links.FirstOrDefault(i =&gt; i.RelationshipType == <span class="string">"enclosure"</span>)?.Uri.ToString();</span><br><span class="line">               parserModel.ParserItems.Add(parserItem);</span><br><span class="line">               currIndex++;</span><br><span class="line">           &#125;</span><br><span class="line">           parserModel.ResultLength = currIndex;</span><br><span class="line">           parserModel.EndIndex = currIndex;</span><br><span class="line">           <span class="keyword">return</span> parserModel;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Controllers"><a href="#Controllers" class="headerlink" title="Controllers"></a>Controllers</h2><p><strong>BaseAPIController</strong> – This is the base API controller and it will have the default annotationattributes for APIController and Route Actions. Note that i am using APIController Attribute that denotes a Web API controller class and it provides some useful methods and properties by coupling with ControllerBase method such as automatic 400 responses and more. I have also defined the default route [Route(“api/<strong>[controller]</strong>“)] at base class level so that i dont have to redefine this on every other controller.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">ApiController</span>]</span><br><span class="line">    [<span class="meta">Route(<span class="meta-string">"api/[controller]"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BaseAPIController</span> : <span class="title">ControllerBase</span></span><br><span class="line">    &#123;        </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">BaseAPIController</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line"> </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Ch9Controller</strong> – This controller will have all the GET methods for various streaming boxes and produces the xml or json output. Note that, i am using HttpGet(“Roku”) so that it allows me to have multiple GET methods on single controller. you can also define your Routing by action like [HttpGet(“[action]”)] and then you can call the API with the method name like /API/Ch9/GetRokuFormat<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Ch9Controller</span> : <span class="title">BaseAPIController</span></span><br><span class="line">    &#123;       </span><br><span class="line">        [<span class="meta">HttpGet(<span class="meta-string">"Roku"</span>)</span>] </span><br><span class="line">        [<span class="meta">Produces(<span class="meta-string">"application/xml"</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> RokuFeedParserModel <span class="title">GetRokuFormat</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;           </span><br><span class="line">            <span class="keyword">var</span> parserService = <span class="keyword">new</span> Ch9RokuParserService(<span class="string">"https://s.ch9.ms/Feeds/RSS"</span>);            </span><br><span class="line">            <span class="keyword">return</span> parserService.ParseContent().Result;   </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p> <strong>Startup.cs</strong> - In my startup class, i have enabled both XML and JSON formatter to support both format based on the request. You can also create custom formatter<br>if you need other than XML / Json. Note that i have enabled RespectBrowserAcceptHeader = true to support the XML output. Also, i have used the XML Annotation to change the<br>element name and added the XMLIgnore Attribute to ignore from serialization.<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Startup</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Startup</span>(<span class="params">IConfiguration configuration</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Configuration = configuration;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> IConfiguration Configuration &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// This method gets called by the runtime. Use this method to add services to the container.</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ConfigureServices</span>(<span class="params">IServiceCollection services</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        services.AddMvc(options =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            options.RespectBrowserAcceptHeader = <span class="literal">true</span>;                </span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment">//support application/xml</span></span><br><span class="line">        .AddXmlSerializerFormatters()</span><br><span class="line">        <span class="comment">//support application/json</span></span><br><span class="line">        .AddJsonOptions(options =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Force Camel Case to JSON</span></span><br><span class="line">            options.SerializerSettings.ContractResolver = <span class="keyword">new</span> CamelCasePropertyNamesContractResolver();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Configure</span>(<span class="params">IApplicationBuilder app, IHostingEnvironment env</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span> (env.IsDevelopment())</span><br><span class="line">        &#123;</span><br><span class="line">            app.UseDeveloperExceptionPage();</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        app.UseMvcWithDefaultRoute();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Program.cs</strong> - I used the default settings to start the kestrel web server and configured to the use the 5000 port for hosted application to listening on that port. This will be used when we deploy the application Raspberry PI later.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            BuildWebHost(args).Run();</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IWebHost <span class="title">BuildWebHost</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span> =&gt;</span><br><span class="line">            WebHost.CreateDefaultBuilder(args)</span><br><span class="line">                .UseStartup&lt;startup&gt;()</span><br><span class="line">                .UseUrls(<span class="string">"http://*:5000"</span>)</span><br><span class="line">                .Build();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>Now that we have done the coding for our channel9 feed Web API to support Roku XML format, let us run the application first using IIS express to make sure it works.  </p>
+<p><a href="https://lh3.googleusercontent.com/-h28tETPw9SU/WwLadc_nKNI/AAAAAAAGsAU/e8U-pwxe2wIUzpprQ6uqgNl96PAA-7f4QCHMYCw/s1600-h/image%255B12%255D" target="_blank" rel="noopener"><img src="https://lh3.googleusercontent.com/-g6IN63trdm8/WwLafo4A2HI/AAAAAAAGsAY/h9OV9A0nl7Ebd9Ixx2auMfiP9mCtK2ARQCHMYCw/image_thumb%255B8%255D?imgmax=800" alt="image" title="image"></a></p>
+<h2 id="Deploying-Net-Core-Web-API-on-Raspberry-PI"><a href="#Deploying-Net-Core-Web-API-on-Raspberry-PI" class="headerlink" title="Deploying .Net Core Web API on Raspberry PI"></a>Deploying .Net Core Web API on Raspberry PI</h2><p>Now, that our application produced the xml output as expected, we will deploy this latest .Net Core 2.1 Web API in our Raspberry PI. Please note that .Net Core runs only on Raspberry PI 2 / 3. It does not run on Pi Zero. The Raspberry PI that i have is currently running on Raspian OS.  </p>
+<p>Before we deploy our application, As a first step, we have to install the .Net Core SDK and Runtime on Raspberry PI. In order to install the SDK, we will be executing the below commands on PI terminal window. I already have remote connection enabled from my laptop for my PI. I have also enabled network share from my PI so that i can publish the code later using windows file share. If you want to know how to enable to remote connection and file sharing for your Raspberry PI , visit the daveJ article about <a href="http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/" target="_blank" rel="noopener">Beginner’s Guide to Installing Node.js on a Raspberry Pi</a> and he explained all the steps in details.<br>Launch the remote connection and connect to the PI Server. Launch the terminal window and run the following commands.  </p>
+<p>$ sudo apt-get -y update<br>$ sudo apt-get -y install libunwind8 gettext<br>$ wget <a href="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.300-rc1-008673/dotnet-sdk-2.1.300-rc1-008673-linux-arm.tar.gz" target="_blank" rel="noopener">https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.300-rc1-008673/dotnet-sdk-2.1.300-rc1-008673-linux-arm.tar.gz</a><br>$ wget <a href="https://dotnetcli.blob.core.windows.net/dotnet/aspnetcore/Runtime/2.1.0-rc1-final/aspnetcore-runtime-2.1.0-rc1-final-linux-arm.tar.gz" target="_blank" rel="noopener">https://dotnetcli.blob.core.windows.net/dotnet/aspnetcore/Runtime/2.1.0-rc1-final/aspnetcore-runtime-2.1.0-rc1-final-linux-arm.tar.gz</a><br>$ sudo mkdir /opt/dotnet<br>$ sudo tar -xvf dotnet-sdk-2.1.300-rc1-008673-linux-arm.tar.gz -C /opt/dotnet/<br>$ sudo tar -xvf aspnetcore-runtime-2.1.0-rc1-final-linux-arm.tar.gz -C /opt/dotnet<br>$ sudo ln -s /opt/dotnet/dotnet /usr/local/bin</p>
+<p>The first two commands are required for Raspbian for deploying .Net Core SDK and Runtime. These are some dependencies modules that has to be added manually. For more details, you can check the official documentation <a href="https://github.com/dotnet/core/blob/master/samples/RaspberryPiInstructions.md#linux" target="_blank" rel="noopener">here</a>.  </p>
+<p>The next two <strong>WGET</strong> commands will download the latest DotNet SDK and Runtime (2.1 RC1) and then the following commands will be used to extract the output to /opt/dotnet folder and a symbolic link created for dotnet.  </p>
+<p>If all the above steps are done with no errors, .Net Core SDK is installed on PI. Just run the command <strong>dotnet –info</strong> to display the information about DotNet SDK and Runtime details.  </p>
+<p>Now, that we have installed the .Net Core SDK and Runtime on PI, its time to build and deploy the published code on PI. As I mentioned earlier, I have the network shared drive enabled on my PI to copy the files. You can also transfer to PI via other methods like FTP.  </p>
+<p>As a first step, Lets publish the application in Linux ARM architecture since Raspbian is based on Linux. Navigate to the project folder and execute the following command to publish the output.  </p>
+<p><strong>dotnet publish . -r linux-arm</strong></p>
+<p><a href="https://lh3.googleusercontent.com/-s7KKw4g4Yv4/WwLahyF-tLI/AAAAAAAGsAc/suGMwuFH2_su5IpLzqw-IAQ_8_6pOlVdQCHMYCw/s1600-h/image%255B25%255D" target="_blank" rel="noopener"><img src="https://lh3.googleusercontent.com/-FJC_v1OXIlY/WwLajnEUdlI/AAAAAAAGsAg/6RUPaW7VCxs45WeskSsBzugnHjc7rAuQwCHMYCw/image_thumb%255B15%255D?imgmax=800" alt="image" title="image"></a>  </p>
+<p>if you want to publish in release mode, you can add <strong>-c release</strong> attribute.  </p>
+<p>The code is published in Linux-arm\Publish folder. Now, I will create a folder in PI server called VideoParserAPI and copy all the files from linux-arm\publish folder and paste into VideoParserAPI folder in PI Server.  </p>
+<p>Now the code is published in to PI, we will just the run the application to start the service listening on port 5000. Remember in my startup class, i used the Port No 5000 to listen for network connection. Remember, this is my personal project and i will be using it only in my internal network and i have no intention to publish it on internet. If you have the application that needs to be published on internet, you may have to use reverse proxy like nginx to configure port 80 and reroute to kestrel web server for best practices.  </p>
+<p><a href="https://lh3.googleusercontent.com/-hi881h43Gvc/WwLamEMZWWI/AAAAAAAGsAk/T5uRcPavZAg7L8SM6rvNmDQTwOA6BjhIgCHMYCw/s1600-h/image%255B29%255D" target="_blank" rel="noopener"><img src="https://lh3.googleusercontent.com/-igCwOkjMI3M/WwLaoCuCVZI/AAAAAAAGsAo/cnstEC0xtNYLWJwDEiwJ-dqUoG7IruQ0QCHMYCw/image_thumb%255B17%255D?imgmax=800" alt="image" title="image"></a>  </p>
+<p>Lets run the application to start the services. Open the Terminal Window on PI Server and execute the ./VideoParserAPI to run the application. It a few seconds, the service will start and listening on Port 5000.<br><a href="https://lh3.googleusercontent.com/-hVOqTIAWGks/WwLap0wV3hI/AAAAAAAGsAs/QUMZB_e-hfwvYjn9o2mDclVZrFspLtS-wCHMYCw/s1600-h/image%255B33%255D" target="_blank" rel="noopener"><img src="https://lh3.googleusercontent.com/-ePdk_TWssM8/WwLarvgNWxI/AAAAAAAGsAw/bOaqIelfUjA5LArEUf9WVfKZTTckT-QVwCHMYCw/image_thumb%255B19%255D?imgmax=800" alt="image" title="image"></a>  </p>
+<p>Lets call the web API from my system to see the output.  </p>
+<p><a href="http://pi:5000/api/ch9/roku" target="_blank" rel="noopener">http://pi:5000/api/ch9/roku</a>  </p>
+<p><a href="https://lh3.googleusercontent.com/-nLpTM6Hemu8/WwLautVAy5I/AAAAAAAGsA4/2FcuBTRszLMBAJAVUnZY3M_vdtj7FX7HACHMYCw/s1600-h/image%255B39%255D" target="_blank" rel="noopener"><img src="https://lh3.googleusercontent.com/-gCvGQQl386Q/WwLaw85koOI/AAAAAAAGsA8/VpSdYi0AUK4t5alSOStRSCEGhueYSc_2ACHMYCw/image_thumb%255B23%255D?imgmax=800" alt="image" title="image"></a>  </p>
+<p>There you go. Web API Application developed in Latest .Net Core 2.1 is running on Raspberry PI. <img src="https://lh3.googleusercontent.com/-30WIS4h_zkY/WwLayxJuG7I/AAAAAAAGsBA/0CuhttLO3_4Ia3UcnZ1l8McxUnCkd5twQCHMYCw/wlEmoticon-smile%255B2%255D?imgmax=800" alt="Smile">  </p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>I have created design pattern to handle all the core parsing logic in the base classes so that we don’t have to rewrite the logic for every other streaming boxes. however, we can customize the logic to change the output xml / json content based on the streaming box in appropriate child class.  </p>
+<p>In future, I will be developing an android app to consume these web api to play the content in my mobile with chromecast support. We can also extend this library to any other streaming box (Apple TV, Fire TV) . I also planned to deploy this web API app inside the docker in my Raspberry PI later.  </p>
+<p>I hope this will help you to get going with your crazy ideas.  </p>
+<p>The entire source code is uploaded to <a href="https://github.com/vavjeeva/VideoParserAPI/" target="_blank" rel="noopener">github</a>.  </p>
+<p>Happy Coding !!!</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Raspberry-PI/" rel="tag"># Raspberry PI</a>
+          
+            <a href="/tags/Net-Core/" rel="tag"># .Net Core</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/30/simultaneous-data-queue-polling-request/" rel="next" title="Simultaneous Data Queue Polling Request Processing in SQL Server">
+                <i class="fa fa-chevron-left"></i> Simultaneous Data Queue Polling Request Processing in SQL Server
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/06/real-time-language-translation-chat/" rel="prev" title="Real time Language Translation chat using SignalR and Azure Cognitive Services and TypedHttpClient - .Net Core 2.1">
+                Real time Language Translation chat using SignalR and Azure Cognitive Services and TypedHttpClient - .Net Core 2.1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Jeeva Subburaj">
+            
+              <p class="site-author-name" itemprop="name">Jeeva Subburaj</p>
+              <div class="site-description motion-element" itemprop="description">Programmer, Blogger</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/vavjeeva" title="GitHub &rarr; https://github.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:vavjeeva@gmail.com" title="E-Mail &rarr; mailto:vavjeeva@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/vavjeeva" title="Twitter &rarr; https://twitter.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://stackoverflow.com/users/79442/jeeva-subburaj" title="StackOverflow &rarr; https://stackoverflow.com/users/79442/jeeva-subburaj" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeeva Subburaj</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+  <script id="dsq-count-scr" src="https://jeevasubburaj.disqus.com/count.js" async></script>
+
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://jeevasubburaj.com/2018/05/21/parser-api-using-net-core-web-api-21/";
+    this.page.identifier = "2018/05/21/parser-api-using-net-core-web-api-21/";
+    this.page.title = 'Parser API using .Net Core Web API 2.1 and Hosting in Raspberry PI';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jeevasubburaj.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

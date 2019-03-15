@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Real-time technologies are now part of every modern applications and SignalR is the most popular .net library to create real time scenarios. Recently Microsoft announced the public preview of Azure S">
+<meta name="keywords" content="C#,.Net Core,Azure,SignalR,HttpClient">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure SignalR Messaging with .Net Core Console App Server and Client">
+<meta property="og:url" content="https://jeevasubburaj.com/2018/08/14/azure-signalr-messaging-with-net-core/index.html">
+<meta property="og:site_name" content="Jeeva Subburaj - Programmer, Blogger">
+<meta property="og:description" content="Real-time technologies are now part of every modern applications and SignalR is the most popular .net library to create real time scenarios. Recently Microsoft announced the public preview of Azure S">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://2.bp.blogspot.com/-CkqyHBfVka0/W3MecQh3mTI/AAAAAAAGycw/VksPWJI4r8sNNnyDGit-3hvIgGWjPFwyACLcBGAs/s640/Article%2BTitle.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-08oxTexHUVs/W3MEszoS2PI/AAAAAAAGybQ/3PiWPWl8ZmUyxmgpc2X07Ds4EUIIkiqGwCLcBGAs/s640/Duplex%2BArchitecture.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-wkOE5IqMqyY/W3MbZd79QQI/AAAAAAAGyck/Q_ZHrXxe8QoNSZI4pOTFXThbUUiNXT4wACLcBGAs/s640/Broadcast%2BArchitecture.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-5_ovgO2RVvg/W3MGhn6qs9I/AAAAAAAGybg/Y0oBrrSLMgM5JHwnPg6h74DwtD-qhwKLQCLcBGAs/s640/Architecture.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-HyhJvU5KYnI/W3MHy3KE1rI/AAAAAAAGycM/qXnGM01A5qoSXxMBGCms_F3VJQyC3usjQCEwYBhgL/s320/Solutions.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-aRWg-Ssz3so/W3MHFLL8FqI/AAAAAAAGybo/Fs9Ma9bBxCAYfK0_ICS9K1Ofi3Vyn63cQCLcBGAs/s640/SignalR%2BService%2B-%2BEnd%2BPoint.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-1zj7ligZnfc/W3MHO2wJnxI/AAAAAAAGybs/mpThM2-PL6k17iLv7vUndoxcFy51aEuswCLcBGAs/s640/UserSecrets.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-czcyoay7tYc/W3MHUBJr0PI/AAAAAAAGybw/nnBW-9WZEk8neO97-hOn2WNIXqtbkrGKgCLcBGAs/s640/UserSecrets%2BSet.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-GzN7OluXmoA/W3MICEz8_mI/AAAAAAAGycI/t7F_mWALPtE1J8wBiWj0IqNAdws7mf7uQCLcBGAs/s640/UserSecrets%2BView.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-CiH_E7jp6bE/W3MKbfPLqdI/AAAAAAAGycc/ABJyqSCkP8wuPovzJgA_pJkgHudzA5_CwCLcBGAs/s1600/how_it_works_demo.gif">
+<meta property="og:updated_time" content="2019-03-15T17:32:19.747Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Azure SignalR Messaging with .Net Core Console App Server and Client">
+<meta name="twitter:description" content="Real-time technologies are now part of every modern applications and SignalR is the most popular .net library to create real time scenarios. Recently Microsoft announced the public preview of Azure S">
+<meta name="twitter:image" content="https://2.bp.blogspot.com/-CkqyHBfVka0/W3MecQh3mTI/AAAAAAAGycw/VksPWJI4r8sNNnyDGit-3hvIgGWjPFwyACLcBGAs/s640/Article%2BTitle.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://jeevasubburaj.com/2018/08/14/azure-signalr-messaging-with-net-core/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Azure SignalR Messaging with .Net Core Console App Server and Client | Jeeva Subburaj - Programmer, Blogger</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jeeva Subburaj - Programmer, Blogger</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://jeevasubburaj.com/2018/08/14/azure-signalr-messaging-with-net-core/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeeva Subburaj">
+      <meta itemprop="description" content="Programmer, Blogger">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jeeva Subburaj - Programmer, Blogger">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Azure SignalR Messaging with .Net Core Console App Server and Client
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-08-14 14:17:00" itemprop="dateCreated datePublished" datetime="2018-08-14T14:17:00-04:00">2018-08-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-03-15 13:32:19" itemprop="dateModified" datetime="2019-03-15T13:32:19-04:00">2019-03-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2018/08/14/azure-signalr-messaging-with-net-core/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/14/azure-signalr-messaging-with-net-core/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://2.bp.blogspot.com/-CkqyHBfVka0/W3MecQh3mTI/AAAAAAAGycw/VksPWJI4r8sNNnyDGit-3hvIgGWjPFwyACLcBGAs/s640/Article%2BTitle.png" alt></p>
+<p>Real-time technologies are now part of every modern applications and SignalR is the most popular .net library to create real time scenarios. Recently Microsoft announced the <a href="https://azure.microsoft.com/en-us/blog/azure-signalr-service-a-fully-managed-service-to-add-real-time-functionality/" target="_blank" rel="noopener">public preview of Azure SignalR</a>, a cloud based fully managed service to build real time application without worrying about capacity provisioning, scaling, or persistent connections. In this article, we are going to discuss about how to create .Net Core SignalR server console app to broadcast the messages to all the connected clients in real-time without using Asp.net Core SignalR Web App.  </p>
+<a id="more"></a>  
+<h3 id="Deeper-dive-Azure-SignalR-Service"><a href="#Deeper-dive-Azure-SignalR-Service" class="headerlink" title="Deeper dive Azure SignalR Service"></a>Deeper dive Azure SignalR Service</h3><p>In the enterprise world, SignalR applications often comes with high volume data flows and large number of concurrent connections between app and client. To handle that scenario, we have to setup the web farms with sticky sessions and a backplane like Redis to make sure messages are distributed to the right client. If we use Azure SignalR service, it will handle all those issues and we can focus only on business logic.  </p>
+<p>In addition to that, Azure SignalR Service works well with existing Asp.net Core SignalR Hub with very less changes. We have to add reference to Azure SignalR SDK and configure the Azure connection string in the application and then adding few lines of code  <strong><em>services.AddSignalR().AddAzureSignalR()</em></strong>  and  <em><strong>app.UseAzureSignalR</strong></em>  in  <strong>Startup.cs</strong>.  </p>
+<p>Existing Asp.net Core SignalR client app works with Azure SignalR Service without any modification in the code. You can refer my early article about “<a href="http://www.jeevasubburaj.com/2018/07/magic-paste-universal-paste-data-to-web.html" target="_blank" rel="noopener">How to build real time communication with cross platform devices using Azure SignalR Service</a>” for more details.  </p>
+<p>As of today, if you want to implement duplex communication between SignalR client and server using Azure SignalR Service, you must need ASP.net Core SignalR Server Hub(Web App). However, If you just want to push the messages from server to clients (oneway), you can use Azure SignalR Service without having Asp.net Core SignalR Hub (Web App).  </p>
+<p><a href="https://3.bp.blogspot.com/-08oxTexHUVs/W3MEszoS2PI/AAAAAAAGybQ/3PiWPWl8ZmUyxmgpc2X07Ds4EUIIkiqGwCLcBGAs/s1600/Duplex%2BArchitecture.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-08oxTexHUVs/W3MEszoS2PI/AAAAAAAGybQ/3PiWPWl8ZmUyxmgpc2X07Ds4EUIIkiqGwCLcBGAs/s640/Duplex%2BArchitecture.png" alt></a></p>
+<p><a href="https://2.bp.blogspot.com/-wkOE5IqMqyY/W3MbZd79QQI/AAAAAAAGyck/Q_ZHrXxe8QoNSZI4pOTFXThbUUiNXT4wACLcBGAs/s1600/Broadcast%2BArchitecture.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-wkOE5IqMqyY/W3MbZd79QQI/AAAAAAAGyck/Q_ZHrXxe8QoNSZI4pOTFXThbUUiNXT4wACLcBGAs/s640/Broadcast%2BArchitecture.png" alt></a></p>
+<p>In the diagram above, we have two endpoints called Server Endpoint and Client End Point. With those End Points, SignalR Server and Client can connect to Azure SignalR Service without the need of Asp.net Core Web App.  </p>
+<p>Azure SignalR Service exposed set of REST APIs to send messages to all clients from anywhere using any programming language or any REST client such as Postman. The Server REST API swagger documentation is in the following link.  </p>
+<p><a href="https://github.com/Azure/azure-signalr/blob/dev/docs/swagger.json" target="_blank" rel="noopener">https://github.com/Azure/azure-signalr/blob/dev/docs/swagger.json</a>  </p>
+<h4 id="Server-Endpoint"><a href="#Server-Endpoint" class="headerlink" title="Server Endpoint"></a>Server Endpoint</h4><p>REST APIs are only exposed on port 5002. In each HTTP request, an authorization header with a  <a href="https://en.wikipedia.org/wiki/JSON_Web_Token" target="_blank" rel="noopener">JSON Web Token (JWT)</a>  is required to authenticate with Azure SignalR Service. You should use the AccessKey in Azure SignalR Service instance’s connection string to sign the generated JWT token.  </p>
+<p><strong>Rest API URL</strong>  </p>
+<p>POST  _https://&lt;service_endpoint&gt;:5002/api/v1-preview/hub/&lt;hub_name&gt;_  </p>
+<p>The body of the request is a JSON object with two properties:  </p>
+<p><em>Target: The target method you want to call in clients.</em><br><em>Arguments: an array of arguments you want to send to clients.</em>  </p>
+<p>The API service authenticates REST call using JWT token, when you are generating the  <a href="https://en.wikipedia.org/wiki/JSON_Web_Token" target="_blank" rel="noopener">JWT token</a>, use the access key in SignalR service connection string as a Secret Key and put it in authentication header.  </p>
+<h4 id="Client-Endpoint"><a href="#Client-Endpoint" class="headerlink" title="Client Endpoint"></a>Client Endpoint</h4><p>_https://&lt;service_endpoint&gt;:5001/client/?hub=<hubname>_  </hubname></p>
+<p>Clients also connect to Azure SignalR service using JWT token same as described above and each client will use some unique user id and the Client Endpoint URL to generate the token.  </p>
+<p>With all the details above, let us build a simple .Net Core Console App to broadcast messages using Azure SignalR Service.  </p>
+<h3 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h3><p>In this demo, we will see how the SignalR Console App server connect to Azure SignalR Service with REST API call to broadcast the messages to all connected console app clients in real time.  </p>
+<p><a href="https://3.bp.blogspot.com/-5_ovgO2RVvg/W3MGhn6qs9I/AAAAAAAGybg/Y0oBrrSLMgM5JHwnPg6h74DwtD-qhwKLQCLcBGAs/s1600/Architecture.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-5_ovgO2RVvg/W3MGhn6qs9I/AAAAAAAGybg/Y0oBrrSLMgM5JHwnPg6h74DwtD-qhwKLQCLcBGAs/s640/Architecture.png" alt></a></p>
+<h3 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h3><h4 id="Creating-Projects"><a href="#Creating-Projects" class="headerlink" title="Creating Projects"></a>Creating Projects</h4><p>We will be creating following three projects.  </p>
+<p><a href="https://3.bp.blogspot.com/-HyhJvU5KYnI/W3MHy3KE1rI/AAAAAAAGycM/qXnGM01A5qoSXxMBGCms_F3VJQyC3usjQCEwYBhgL/s1600/Solutions.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-HyhJvU5KYnI/W3MHy3KE1rI/AAAAAAAGycM/qXnGM01A5qoSXxMBGCms_F3VJQyC3usjQCEwYBhgL/s320/Solutions.png" alt></a></p>
+<ul>
+<li>AzureSignalRConsoleApp.Server - .Net Core Console App</li>
+<li>AzureSignalRConsoleApp.Client - .Net Core Console App</li>
+<li>AzureSignalRConsoleApp.Utils - .Net Core Class Library</li>
+</ul>
+<h4 id="AzureSignalRConsoleApp-Utils"><a href="#AzureSignalRConsoleApp-Utils" class="headerlink" title="AzureSignalRConsoleApp.Utils"></a>AzureSignalRConsoleApp.Utils</h4><p>This class library holds the logic to generate the JWT token based on the access key from Azure Connection string. It also holds the method to parse the Azure SignalR Connection String to get the endpoint and access key.  </p>
+<p><strong>Nuget Packages Required</strong>  </p>
+<ul>
+<li>System.IdentityModel.Tokens.Jwt</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ServiceUtils</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> JwtSecurityTokenHandler JwtTokenHandler = <span class="keyword">new</span> JwtSecurityTokenHandler();</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> Endpoint &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> AccessKey &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ServiceUtils</span>(<span class="params"><span class="keyword">string</span> connectionString</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            (Endpoint, AccessKey) = ParseConnectionString(connectionString);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">GenerateAccessToken</span>(<span class="params"><span class="keyword">string</span> audience, <span class="keyword">string</span> userId, TimeSpan? lifetime = <span class="literal">null</span></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            IEnumerable&lt;claim&gt; claims = <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">if</span> (userId != <span class="literal">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                claims = <span class="keyword">new</span>[]</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">new</span> Claim(ClaimTypes.NameIdentifier, userId)</span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">return</span> GenerateAccessTokenInternal(audience, claims, lifetime ?? TimeSpan.FromHours(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">GenerateAccessTokenInternal</span>(<span class="params"><span class="keyword">string</span> audience, IEnumerable&lt;claim&gt; claims, TimeSpan lifetime</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">var</span> expire = DateTime.UtcNow.Add(lifetime);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">var</span> securityKey = <span class="keyword">new</span> SymmetricSecurityKey(Encoding.UTF8.GetBytes(AccessKey));</span><br><span class="line">            <span class="keyword">var</span> credentials = <span class="keyword">new</span> SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">var</span> token = JwtTokenHandler.CreateJwtSecurityToken(</span><br><span class="line">                issuer: <span class="literal">null</span>,</span><br><span class="line">                audience: audience,</span><br><span class="line">                subject: claims == <span class="literal">null</span> ? <span class="literal">null</span> : <span class="keyword">new</span> ClaimsIdentity(claims),</span><br><span class="line">                expires: expire,</span><br><span class="line">                signingCredentials: credentials);</span><br><span class="line">            <span class="keyword">return</span> JwtTokenHandler.WriteToken(token);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">char</span>[] PropertySeparator = &#123; <span class="string">';'</span> &#125;;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">char</span>[] KeyValueSeparator = &#123; <span class="string">'='</span> &#125;;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">string</span> EndpointProperty = <span class="string">"endpoint"</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">string</span> AccessKeyProperty = <span class="string">"accesskey"</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">internal</span> <span class="title">static</span> (<span class="params"><span class="keyword">string</span>, <span class="keyword">string</span></span>) <span class="title">ParseConnectionString</span>(<span class="params"><span class="keyword">string</span> connectionString</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">var</span> properties = connectionString.Split(PropertySeparator, StringSplitOptions.RemoveEmptyEntries);</span><br><span class="line">            <span class="keyword">if</span> (properties.Length &gt; <span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> dict = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span> <span class="keyword">string</span>=<span class="string">""</span>&lt;(StringComparer.OrdinalIgnoreCase);</span><br><span class="line">                <span class="keyword">foreach</span> (<span class="keyword">var</span> property <span class="keyword">in</span> properties)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">var</span> kvp = property.Split(KeyValueSeparator, <span class="number">2</span>);</span><br><span class="line">                    <span class="keyword">if</span> (kvp.Length != <span class="number">2</span>) <span class="keyword">continue</span>;</span><br><span class="line"> </span><br><span class="line">                    <span class="keyword">var</span> key = kvp[<span class="number">0</span>].Trim();</span><br><span class="line">                    <span class="keyword">if</span> (dict.ContainsKey(key))</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentException(<span class="string">$"Duplicate properties found in connection string: <span class="subst">&#123;key&#125;</span>."</span>);</span><br><span class="line">                    &#125;</span><br><span class="line"> </span><br><span class="line">                    dict.Add(key, kvp[<span class="number">1</span>].Trim());</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">if</span> (dict.ContainsKey(EndpointProperty) &amp;&amp; dict.ContainsKey(AccessKeyProperty))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">return</span> (dict[EndpointProperty].TrimEnd(<span class="string">'/'</span>), dict[AccessKeyProperty]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentException(<span class="string">$"Connection string missing required properties <span class="subst">&#123;EndpointProperty&#125;</span> and <span class="subst">&#123;AccessKeyProperty&#125;</span>."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="AzureSignalRConsoleApp-Server"><a href="#AzureSignalRConsoleApp-Server" class="headerlink" title="AzureSignalRConsoleApp.Server"></a>AzureSignalRConsoleApp.Server</h4><p>This is the .net core SignalR Server console app to broadcast the messages via REST API call.  </p>
+<p><strong>Nuget Packages Required</strong>  </p>
+<ul>
+<li>Microsoft.Extensions.Configuration.UserSecrets</li>
+</ul>
+<p><strong>Steps</strong>  </p>
+<ul>
+<li>Login to Azure Portal and get the Azure SignalR Service Connection String and store it in UserSecrets.json.</li>
+</ul>
+<p><a href="https://2.bp.blogspot.com/-aRWg-Ssz3so/W3MHFLL8FqI/AAAAAAAGybo/Fs9Ma9bBxCAYfK0_ICS9K1Ofi3Vyn63cQCLcBGAs/s1600/SignalR%2BService%2B-%2BEnd%2BPoint.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-aRWg-Ssz3so/W3MHFLL8FqI/AAAAAAAGybo/Fs9Ma9bBxCAYfK0_ICS9K1Ofi3Vyn63cQCLcBGAs/s640/SignalR%2BService%2B-%2BEnd%2BPoint.png" alt></a></p>
+<ul>
+<li>Visual Studio does not provide the built-in support to manage User Secrets for .Net Core Console App. We have to manually create UserSecretsID element under PropertyGroup in the .csproj file and put the randomly generated GUID as below.</li>
+</ul>
+<p><a href="https://4.bp.blogspot.com/-1zj7ligZnfc/W3MHO2wJnxI/AAAAAAAGybs/mpThM2-PL6k17iLv7vUndoxcFy51aEuswCLcBGAs/s1600/UserSecrets.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-1zj7ligZnfc/W3MHO2wJnxI/AAAAAAAGybs/mpThM2-PL6k17iLv7vUndoxcFy51aEuswCLcBGAs/s640/UserSecrets.png" alt></a></p>
+<ul>
+<li>Open the command window from the root project location and run the following command to create secrets.json file with the configuration data</li>
+</ul>
+<p><em>dotnet user-secrets set key value</em></p>
+<p><a href="https://4.bp.blogspot.com/-czcyoay7tYc/W3MHUBJr0PI/AAAAAAAGybw/nnBW-9WZEk8neO97-hOn2WNIXqtbkrGKgCLcBGAs/s1600/UserSecrets%2BSet.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-czcyoay7tYc/W3MHUBJr0PI/AAAAAAAGybw/nnBW-9WZEk8neO97-hOn2WNIXqtbkrGKgCLcBGAs/s640/UserSecrets%2BSet.png" alt></a></p>
+<ul>
+<li>Goto %APPDATA%\Microsoft\UserSecrets Folder to verify the new folder exists in the same GUID and the secrets.json file is created with configuration data.</li>
+</ul>
+<p><a href="https://3.bp.blogspot.com/-GzN7OluXmoA/W3MICEz8_mI/AAAAAAAGycI/t7F_mWALPtE1J8wBiWj0IqNAdws7mf7uQCLcBGAs/s1600/UserSecrets%2BView.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-GzN7OluXmoA/W3MICEz8_mI/AAAAAAAGycI/t7F_mWALPtE1J8wBiWj0IqNAdws7mf7uQCLcBGAs/s640/UserSecrets%2BView.png" alt></a></p>
+<ul>
+<li>After the above setup configured successfully, we can load the configuration object with the following code.</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> configuration = <span class="keyword">new</span> ConfigurationBuilder()</span><br><span class="line">               .SetBasePath(Directory.GetCurrentDirectory())</span><br><span class="line">               .AddUserSecrets&lt;program&gt;()</span><br><span class="line">               .Build();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Broadcast method will take the input message from console window, build the httprequest along with generated JWT token in authorization header and make the REST API call to push the messages.<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">amespace AzureSignalRConsoleApp.Server</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> HttpClient httpClient = <span class="keyword">new</span> HttpClient();</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">string</span> hubName = <span class="string">"ConsoleAppBroadcaster"</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">string</span> serverName = <span class="string">"Azure_SignalR_Server_1"</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> ServiceUtils serviceUtils;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="comment">//Loading the Configuration Objects from UserSecrets</span></span><br><span class="line">            <span class="keyword">var</span> configuration = <span class="keyword">new</span> ConfigurationBuilder()</span><br><span class="line">               .SetBasePath(Directory.GetCurrentDirectory())</span><br><span class="line">               .AddUserSecrets&lt;program&gt;()</span><br><span class="line">               .Build();</span><br><span class="line"> </span><br><span class="line">            serviceUtils = <span class="keyword">new</span> ServiceUtils(configuration[<span class="string">"Azure:SignalR:ConnectionString"</span>]);</span><br><span class="line"> </span><br><span class="line">            Console.WriteLine(<span class="string">" Azure SignalR Server Started.\n "</span> +</span><br><span class="line">                              <span class="string">"Start typing and press enter to broadcast messages to all the connected clients.\n "</span> +</span><br><span class="line">                              <span class="string">"Type quit to shut down the server!"</span>);</span><br><span class="line">            <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> data = Console.ReadLine();</span><br><span class="line">                <span class="keyword">if</span> (data.ToLower() == <span class="string">"quit"</span>) <span class="keyword">break</span>;</span><br><span class="line">                Broadcast(data);</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            Console.WriteLine(<span class="string">"SignalR Server is shutting down"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">async</span> <span class="keyword">void</span> <span class="title">Broadcast</span>(<span class="params"><span class="keyword">string</span> message</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">var</span> url = <span class="string">$"<span class="subst">&#123;serviceUtils.Endpoint&#125;</span>:5002/api/v1-preview/hub/<span class="subst">&#123;hubName.ToLower()&#125;</span>"</span>;</span><br><span class="line">            <span class="keyword">var</span> request = <span class="keyword">new</span> HttpRequestMessage(HttpMethod.Post, <span class="keyword">new</span> UriBuilder(url).Uri);</span><br><span class="line"> </span><br><span class="line">            request.Headers.Authorization =</span><br><span class="line">                <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">"Bearer"</span>, serviceUtils.GenerateAccessToken(url, serverName));</span><br><span class="line">            request.Headers.Accept.Add(<span class="keyword">new</span> MediaTypeWithQualityHeaderValue(<span class="string">"application/json"</span>));</span><br><span class="line">            <span class="keyword">var</span> messageContent = <span class="keyword">new</span> MessageContent() &#123; Target = <span class="string">"SendMessage"</span>, Arguments = <span class="keyword">new</span>[] &#123; serverName, message &#125; &#125;;</span><br><span class="line">            request.Content = <span class="keyword">new</span> StringContent(JsonConvert.SerializeObject(messageContent), Encoding.UTF8, <span class="string">"application/json"</span>);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">var</span> response = <span class="keyword">await</span> httpClient.SendAsync(request);</span><br><span class="line">            <span class="keyword">if</span> (response.StatusCode != HttpStatusCode.Accepted)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">$"Sent error: <span class="subst">&#123;response.StatusCode&#125;</span>"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MessageContent</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> Target &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">object</span>[] Arguments &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="AzureSignalRConsoleApp-Client"><a href="#AzureSignalRConsoleApp-Client" class="headerlink" title="AzureSignalRConsoleApp.Client"></a>AzureSignalRConsoleApp.Client</h4><p>This is the .net core SignalR Client console app to receive the messages from Azure SignalR Service.  </p>
+<p><strong>Nuget Packages Required</strong>  </p>
+<ul>
+<li>Microsoft.Extensions.Configuration.UserSecrets</li>
+<li>Microsoft.AspNetCore.SignalR.Client</li>
+</ul>
+<p><strong>Steps</strong>  </p>
+<ul>
+<li><p>In order to load the configuration object from User Secrets to load the Azure Connection String, we must follow the same steps as above.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> configuration = <span class="keyword">new</span> ConfigurationBuilder()</span><br><span class="line">               .SetBasePath(Directory.GetCurrentDirectory())</span><br><span class="line">               .AddUserSecrets&lt;program&gt;()</span><br><span class="line">               .Build();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Generate the JWT access token using client endpoint URL and create hub connection with the client hub URL and the access token to establish the connection with Azure SignalR Service. In the Hub connection ON event, wire up with the same Target method to receive the message.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">AzureSignalRConsoleApp.Client</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">string</span> userId = <span class="string">$"User <span class="subst">&#123;new Random().Next(<span class="number">1</span>, <span class="number">99</span>)&#125;</span>"</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> ServiceUtils serviceUtils;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">string</span> hubName = <span class="string">"ConsoleAppBroadcaster"</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> HubConnection hubConnection;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">async</span> <span class="keyword">static</span> Task <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">var</span> configuration = <span class="keyword">new</span> ConfigurationBuilder()</span><br><span class="line">                .SetBasePath(Directory.GetCurrentDirectory())</span><br><span class="line">                .AddUserSecrets&lt;program&gt;()</span><br><span class="line">                .Build();</span><br><span class="line"> </span><br><span class="line">            serviceUtils = <span class="keyword">new</span> ServiceUtils(configuration[<span class="string">"Azure:SignalR:ConnectionString"</span>]);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">var</span> url = <span class="string">$"<span class="subst">&#123;serviceUtils.Endpoint&#125;</span>:5001/client/?hub=<span class="subst">&#123;hubName&#125;</span>"</span>;</span><br><span class="line"> </span><br><span class="line">            hubConnection = <span class="keyword">new</span> HubConnectionBuilder()</span><br><span class="line">                .WithUrl(url, option =&gt;</span><br><span class="line">                &#123;</span><br><span class="line">                    option.AccessTokenProvider = () =&gt;</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">return</span> Task.FromResult(serviceUtils.GenerateAccessToken(url, userId));</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;).Build();</span><br><span class="line"> </span><br><span class="line">            hubConnection.On&lt;<span class="keyword">string</span> <span class="keyword">string</span>=<span class="string">""</span>&gt;(<span class="string">"SendMessage"</span>,</span><br><span class="line">                (<span class="keyword">string</span> server, <span class="keyword">string</span> message) =&gt;</span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">$"Message from server <span class="subst">&#123;server&#125;</span>: <span class="subst">&#123;message&#125;</span>"</span>);</span><br><span class="line">                &#125;);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">await</span> hubConnection.StartAsync();</span><br><span class="line">            Console.WriteLine(<span class="string">"Client started... Press any key to close the connection"</span>);</span><br><span class="line">            Console.ReadLine();</span><br><span class="line">            <span class="keyword">await</span> hubConnection.DisposeAsync();</span><br><span class="line">            Console.WriteLine(<span class="string">"Client is shutting down..."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="How-it-works"><a href="#How-it-works" class="headerlink" title="How it works"></a>How it works</h3><p>Now that, we have completed the code, let us run the application to see the demo. First, launch the server and then launch more than one client app in multiple command window. After that, start typing in server command window to send messages to all the clients in real-time.<br><a href="https://1.bp.blogspot.com/-CiH_E7jp6bE/W3MKbfPLqdI/AAAAAAAGycc/ABJyqSCkP8wuPovzJgA_pJkgHudzA5_CwCLcBGAs/s1600/how_it_works_demo.gif" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-CiH_E7jp6bE/W3MKbfPLqdI/AAAAAAAGycc/ABJyqSCkP8wuPovzJgA_pJkgHudzA5_CwCLcBGAs/s1600/how_it_works_demo.gif" alt></a></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>In this article, we discussed how to use Azure SignalR Service in .net core console app without using Asp.net Core Web App. In Real World, Azure SignalR Service can be integrated with other Azure services like serverless computing (Azure Functions) to push notification messages to all the connected clients in real time based on some trigger without hosting Asp.net Core Web App and managing the connection with clients. I have uploaded the entire source code in my <a href="https://github.com/vavjeeva/AzureSignalRConsoleApp" target="_blank" rel="noopener">GitHub</a> repository.</p>
+<p>Happy Coding!</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C#</a>
+          
+            <a href="/tags/Net-Core/" rel="tag"># .Net Core</a>
+          
+            <a href="/tags/Azure/" rel="tag"># Azure</a>
+          
+            <a href="/tags/SignalR/" rel="tag"># SignalR</a>
+          
+            <a href="/tags/HttpClient/" rel="tag"># HttpClient</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/28/aspnet-core-basics-accessing/" rel="next" title="Asp.Net Core Basics- Accessing Configuration Settings from Multiple Sources">
+                <i class="fa fa-chevron-left"></i> Asp.Net Core Basics- Accessing Configuration Settings from Multiple Sources
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/12/real-time-cricket-score-chrome/" rel="prev" title="Real Time Cricket Score Chrome Extension using Azure Functions and SignalR">
+                Real Time Cricket Score Chrome Extension using Azure Functions and SignalR <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Jeeva Subburaj">
+            
+              <p class="site-author-name" itemprop="name">Jeeva Subburaj</p>
+              <div class="site-description motion-element" itemprop="description">Programmer, Blogger</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/vavjeeva" title="GitHub &rarr; https://github.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:vavjeeva@gmail.com" title="E-Mail &rarr; mailto:vavjeeva@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/vavjeeva" title="Twitter &rarr; https://twitter.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://stackoverflow.com/users/79442/jeeva-subburaj" title="StackOverflow &rarr; https://stackoverflow.com/users/79442/jeeva-subburaj" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeeva Subburaj</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+  <script id="dsq-count-scr" src="https://jeevasubburaj.disqus.com/count.js" async></script>
+
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://jeevasubburaj.com/2018/08/14/azure-signalr-messaging-with-net-core/";
+    this.page.identifier = "2018/08/14/azure-signalr-messaging-with-net-core/";
+    this.page.title = 'Azure SignalR Messaging with .Net Core Console App Server and Client';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jeevasubburaj.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

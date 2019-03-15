@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="In older Asp.Net Version, we typically store the configuration settings in web.config and access it using ConfigurationManager Class. This worked well in the past however it is not good enough for mo">
+<meta name="keywords" content="C#,Asp.Net Core,.Net Core">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Asp.Net Core Basics- Accessing Configuration Settings from Multiple Sources">
+<meta property="og:url" content="https://jeevasubburaj.com/2018/07/28/aspnet-core-basics-accessing/index.html">
+<meta property="og:site_name" content="Jeeva Subburaj - Programmer, Blogger">
+<meta property="og:description" content="In older Asp.Net Version, we typically store the configuration settings in web.config and access it using ConfigurationManager Class. This worked well in the past however it is not good enough for mo">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://4.bp.blogspot.com/-iMhZ2a58f3E/W1zDPLQFqTI/AAAAAAAGvtw/9UfNHLxQ1IIvoVQmFOgKED9_DiMKHYhKwCLcBGAs/s400/Title%2BImage_Accessing%2BConfiguration%2BSettings%2Bfrom%2BMultiple%2BSources.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-rXQW_8t4N-E/W1y88K6cBeI/AAAAAAAGvsI/twn0n5oTu44jBSYgeNit7Izqx2O0yrHKQCLcBGAs/s1600/1%255B1%255D.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-DGH5LGt4VLA/W1y9W5uB0oI/AAAAAAAGvsQ/Q-_6QLUWm4UN24FU2emJSujVSiwrzvCBQCEwYBhgL/s1600/2.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-aSEu6XKKD4g/W1y9adUeObI/AAAAAAAGvtY/00YGYWdEWHMnrDfp-UpiA4A4M82snJQDQCEwYBhgL/s1600/3.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-khdcjt_Df4M/W1y9azCcNbI/AAAAAAAGvtI/PqJRyN8QikoItmKCAyJnT5LM_vQisO1sACEwYBhgL/s1600/4.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-ve8ATMJwfvY/W1y9bTtW0WI/AAAAAAAGvtM/qNPEmuOy0WMpcdOrz-0FYuJSR14THvzGACEwYBhgL/s1600/5.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-cMpjoIe6gWU/W1y9b0sf7gI/AAAAAAAGvtQ/HLs5TWy1c10Fn6h1QTLzliNHy8Agt1z9gCEwYBhgL/s1600/6.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-ls2llbcWlCU/W1y9cah1YzI/AAAAAAAGvtU/gQV1TOajVyAL-KlexaRY-pyqWcC4DV1egCEwYBhgL/s1600/7.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-ojIlXSbP2gw/W1y9c4Hn-9I/AAAAAAAGvtY/PnrUZSyp1QQiAO3c2tVXN6G2yO58EvaigCEwYBhgL/s1600/8.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-ej7X5m1_Wto/W1y9dV0nP4I/AAAAAAAGvtc/p7KZOhU0fmogMQpM_IeKLJuwX3RH2kxqwCEwYBhgL/s1600/9.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-1vKdoSacIfw/W1y9YhbUMvI/AAAAAAAGvtY/jyf9L9Tma7Y-rnXZU6d3aGk0DyBC9PVKQCEwYBhgL/s1600/10.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-Xl64jxqbeu0/W1y9Yv-56EI/AAAAAAAGvtI/KrZLPfeZOsgoDYDDunBKK9njFSJaxWuKACEwYBhgL/s1600/11.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-KNoMUwKOHt8/W1y9Yqm0wYI/AAAAAAAGvtI/MHV8u5l6DjIHKrOjFOXcyD-44juLMfIDACEwYBhgL/s1600/12.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-z8vfDlUioSQ/W1y9ZFrJK5I/AAAAAAAGvtM/za2bTko2YEglIDQJ3jH3ld0SuHp7iUa9wCEwYBhgL/s1600/13.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-TghjP29AfHo/W1y9ZS7cnOI/AAAAAAAGvtQ/Iuyel5oihkUiSQ-z6X0QPxBeYBPVp6G4ACEwYBhgL/s1600/14.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-PUjh95Nk-XU/W1y9Zzmp4MI/AAAAAAAGvtI/Eg7ecJ_T3K8Xb6Xvmmw225fwxh2zQ_uEwCEwYBhgL/s1600/15.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-A8xhamFLHEE/W1y-hSjEDjI/AAAAAAAGvtk/MOkuWGN-2PYD8JKdMf_e2t1vIhh4g_bPQCLcBGAs/s1600/16.png">
+<meta property="og:updated_time" content="2019-03-15T17:32:14.792Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Asp.Net Core Basics- Accessing Configuration Settings from Multiple Sources">
+<meta name="twitter:description" content="In older Asp.Net Version, we typically store the configuration settings in web.config and access it using ConfigurationManager Class. This worked well in the past however it is not good enough for mo">
+<meta name="twitter:image" content="https://4.bp.blogspot.com/-iMhZ2a58f3E/W1zDPLQFqTI/AAAAAAAGvtw/9UfNHLxQ1IIvoVQmFOgKED9_DiMKHYhKwCLcBGAs/s400/Title%2BImage_Accessing%2BConfiguration%2BSettings%2Bfrom%2BMultiple%2BSources.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://jeevasubburaj.com/2018/07/28/aspnet-core-basics-accessing/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Asp.Net Core Basics- Accessing Configuration Settings from Multiple Sources | Jeeva Subburaj - Programmer, Blogger</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jeeva Subburaj - Programmer, Blogger</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://jeevasubburaj.com/2018/07/28/aspnet-core-basics-accessing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeeva Subburaj">
+      <meta itemprop="description" content="Programmer, Blogger">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jeeva Subburaj - Programmer, Blogger">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Asp.Net Core Basics- Accessing Configuration Settings from Multiple Sources
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-07-28 14:57:00" itemprop="dateCreated datePublished" datetime="2018-07-28T14:57:00-04:00">2018-07-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-03-15 13:32:14" itemprop="dateModified" datetime="2019-03-15T13:32:14-04:00">2019-03-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2018/07/28/aspnet-core-basics-accessing/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/28/aspnet-core-basics-accessing/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://4.bp.blogspot.com/-iMhZ2a58f3E/W1zDPLQFqTI/AAAAAAAGvtw/9UfNHLxQ1IIvoVQmFOgKED9_DiMKHYhKwCLcBGAs/s400/Title%2BImage_Accessing%2BConfiguration%2BSettings%2Bfrom%2BMultiple%2BSources.png" alt> In older Asp.Net Version, we typically store the configuration settings in web.config and access it using <strong>ConfigurationManager</strong> Class. This worked well in the past however it is not good enough for modern technologies like hosting in cloud or container based solutions. Moreover, storing the sensitive data in web.config poses security risk if the file is check in to source control by accident.</p>
+<a id="more"></a>
+<p>In Asp.Net Core , Configuration API was introduced to access the key value pair data from various sources in the order they are configured which allows you to access the configuration keys using Configuration Class regardless of where the keys are stored. If the same key value pair is stored in more than one places, the latest in order of precedence will overwrite the other values. Let’s dive into the demo to see how it works.  </p>
+<h3 id="Order-of-Precedence"><a href="#Order-of-Precedence" class="headerlink" title="Order of Precedence"></a>Order of Precedence</h3><p>By default, ASP.Net Core version 2.0, the configuration providers order of precedence is hidden in Program.cs behind the method call <strong>CreateDefaultBuilder()</strong>. If you look at source code from github, you will see that it loads the data in following order.  </p>
+<ol>
+<li>appsettings.json file</li>
+<li>appsettings.{env.EnvironmentName}.json file</li>
+<li>The local User Secrets File (local development environment only)</li>
+<li>Environment Variables</li>
+<li>Command Line Arguments</li>
+</ol>
+<p><a href="https://2.bp.blogspot.com/-rXQW_8t4N-E/W1y88K6cBeI/AAAAAAAGvsI/twn0n5oTu44jBSYgeNit7Izqx2O0yrHKQCLcBGAs/s1600/1%255B1%255D.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-rXQW_8t4N-E/W1y88K6cBeI/AAAAAAAGvsI/twn0n5oTu44jBSYgeNit7Izqx2O0yrHKQCLcBGAs/s1600/1%255B1%255D.png" alt></a></p>
+<p>In Addition to that, you can also create custom providers by implementing <strong>IConfigurationSource</strong> interface and add it into the processing pipeline. Asp.net core also supports reading from xml file in addition to json file.  </p>
+<h3 id="How-it-Works-–-Demo"><a href="#How-it-Works-–-Demo" class="headerlink" title="How it Works – Demo"></a>How it Works – Demo</h3><p>In this Demo, we will see how to read and display the configuration key that are available from various sources and what value is displaying based on order of precedence. Launch the visual studio and create a new Asp.net Core Empty Web Application.  </p>
+<p><a href="https://3.bp.blogspot.com/-DGH5LGt4VLA/W1y9W5uB0oI/AAAAAAAGvsQ/Q-_6QLUWm4UN24FU2emJSujVSiwrzvCBQCEwYBhgL/s1600/2.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-DGH5LGt4VLA/W1y9W5uB0oI/AAAAAAAGvsQ/Q-_6QLUWm4UN24FU2emJSujVSiwrzvCBQCEwYBhgL/s1600/2.png" alt></a></p>
+<p>After the empty project is created, add the AppSettings.json item into the project.  </p>
+<p><a href="https://4.bp.blogspot.com/-aSEu6XKKD4g/W1y9adUeObI/AAAAAAAGvtY/00YGYWdEWHMnrDfp-UpiA4A4M82snJQDQCEwYBhgL/s1600/3.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-aSEu6XKKD4g/W1y9adUeObI/AAAAAAAGvtY/00YGYWdEWHMnrDfp-UpiA4A4M82snJQDQCEwYBhgL/s1600/3.png" alt></a></p>
+<p>Add the new key value pair item called DemoConfigKey in the AppSettings.json and set the value as “Value from AppSettings.json”  </p>
+<p><a href="https://1.bp.blogspot.com/-khdcjt_Df4M/W1y9azCcNbI/AAAAAAAGvtI/PqJRyN8QikoItmKCAyJnT5LM_vQisO1sACEwYBhgL/s1600/4.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-khdcjt_Df4M/W1y9azCcNbI/AAAAAAAGvtI/PqJRyN8QikoItmKCAyJnT5LM_vQisO1sACEwYBhgL/s1600/4.png" alt></a></p>
+<p>In order to access the value from configuration object we need to use Startup constructor as shown below.  </p>
+<p><a href="https://3.bp.blogspot.com/-ve8ATMJwfvY/W1y9bTtW0WI/AAAAAAAGvtM/qNPEmuOy0WMpcdOrz-0FYuJSR14THvzGACEwYBhgL/s1600/5.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-ve8ATMJwfvY/W1y9bTtW0WI/AAAAAAAGvtM/qNPEmuOy0WMpcdOrz-0FYuJSR14THvzGACEwYBhgL/s1600/5.png" alt></a></p>
+<p>After we added the Startup constructor with the parameter of type IConfiguration, we can store the injected IConfiguration object into local variable and then use it anywhere within ConfigureServices() and Configure() and also we can access it from other controller via dependency injection passing the IConfiguration object in Controller Constructor.  </p>
+<p>In order to print the config value, I have just modified the default Configure method like below. This will print the value reading from configuration sources defined in the order.  </p>
+<p><a href="https://3.bp.blogspot.com/-cMpjoIe6gWU/W1y9b0sf7gI/AAAAAAAGvtQ/HLs5TWy1c10Fn6h1QTLzliNHy8Agt1z9gCEwYBhgL/s1600/6.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-cMpjoIe6gWU/W1y9b0sf7gI/AAAAAAAGvtQ/HLs5TWy1c10Fn6h1QTLzliNHy8Agt1z9gCEwYBhgL/s1600/6.png" alt></a></p>
+<p>When I run the application, you will see the result below reading from AppSettings.json.  </p>
+<p><a href="https://1.bp.blogspot.com/-ls2llbcWlCU/W1y9cah1YzI/AAAAAAAGvtU/gQV1TOajVyAL-KlexaRY-pyqWcC4DV1egCEwYBhgL/s1600/7.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-ls2llbcWlCU/W1y9cah1YzI/AAAAAAAGvtU/gQV1TOajVyAL-KlexaRY-pyqWcC4DV1egCEwYBhgL/s1600/7.png" alt></a></p>
+<h3 id="Appsettings-env-EnvironmentName-json-File"><a href="#Appsettings-env-EnvironmentName-json-File" class="headerlink" title="Appsettings.{env.EnvironmentName}.json File"></a>Appsettings.{env.EnvironmentName}.json File</h3><p>This file is used to override the keys in appsettings.json with deployment environment specific settings. For Example a file named appsettings.production.json would contain values specific to production.  </p>
+<p>By Default, Asp.net Core Environment is Development. You can modify it in Visual Studio by changing it in Project Properties if needed.  </p>
+<p><a href="https://3.bp.blogspot.com/-ojIlXSbP2gw/W1y9c4Hn-9I/AAAAAAAGvtY/PnrUZSyp1QQiAO3c2tVXN6G2yO58EvaigCEwYBhgL/s1600/8.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-ojIlXSbP2gw/W1y9c4Hn-9I/AAAAAAAGvtY/PnrUZSyp1QQiAO3c2tVXN6G2yO58EvaigCEwYBhgL/s1600/8.png" alt></a></p>
+<p>Let’s add the environment specific AppSettings.Development.json file into the project.  </p>
+<p><a href="https://3.bp.blogspot.com/-ej7X5m1_Wto/W1y9dV0nP4I/AAAAAAAGvtc/p7KZOhU0fmogMQpM_IeKLJuwX3RH2kxqwCEwYBhgL/s1600/9.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-ej7X5m1_Wto/W1y9dV0nP4I/AAAAAAAGvtc/p7KZOhU0fmogMQpM_IeKLJuwX3RH2kxqwCEwYBhgL/s1600/9.png" alt></a></p>
+<p>Add the value for DemoConfigKey as “Value from AppSettings.Development.json”  </p>
+<p><a href="https://4.bp.blogspot.com/-1vKdoSacIfw/W1y9YhbUMvI/AAAAAAAGvtY/jyf9L9Tma7Y-rnXZU6d3aGk0DyBC9PVKQCEwYBhgL/s1600/10.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-1vKdoSacIfw/W1y9YhbUMvI/AAAAAAAGvtY/jyf9L9Tma7Y-rnXZU6d3aGk0DyBC9PVKQCEwYBhgL/s1600/10.png" alt></a></p>
+<p>Let’s run the application and see the result. We should get the value from AppSettings.Development.json by overwriting the value from AppSettings.json based on the order of precedence.  </p>
+<p><a href="https://2.bp.blogspot.com/-Xl64jxqbeu0/W1y9Yv-56EI/AAAAAAAGvtI/KrZLPfeZOsgoDYDDunBKK9njFSJaxWuKACEwYBhgL/s1600/11.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-Xl64jxqbeu0/W1y9Yv-56EI/AAAAAAAGvtI/KrZLPfeZOsgoDYDDunBKK9njFSJaxWuKACEwYBhgL/s1600/11.png" alt></a></p>
+<h3 id="User-Secrets"><a href="#User-Secrets" class="headerlink" title="User Secrets"></a>User Secrets</h3><p>The User Secrets file is a JSON file stored on the local developer machine. This file is unencrypted and stored outside of the solution directory (under user profile directory) and, therefore, is not checked into source control by accident. The user secrets file is used only for local development overrides like connecting to a local database server or development server API key values etc. These configuration values are only relevant to the local developer and any other developer / machine cannot access those values.  </p>
+<p>To add the UserSecrects.json file, right click on the project file and select Manage User Secrets.  </p>
+<p><a href="https://1.bp.blogspot.com/-KNoMUwKOHt8/W1y9Yqm0wYI/AAAAAAAGvtI/MHV8u5l6DjIHKrOjFOXcyD-44juLMfIDACEwYBhgL/s1600/12.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-KNoMUwKOHt8/W1y9Yqm0wYI/AAAAAAAGvtI/MHV8u5l6DjIHKrOjFOXcyD-44juLMfIDACEwYBhgL/s1600/12.png" alt></a></p>
+<p>Add the Same key and set the different value as below.  </p>
+<p><a href="https://3.bp.blogspot.com/-z8vfDlUioSQ/W1y9ZFrJK5I/AAAAAAAGvtM/za2bTko2YEglIDQJ3jH3ld0SuHp7iUa9wCEwYBhgL/s1600/13.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-z8vfDlUioSQ/W1y9ZFrJK5I/AAAAAAAGvtM/za2bTko2YEglIDQJ3jH3ld0SuHp7iUa9wCEwYBhgL/s1600/13.png" alt></a></p>
+<p>Lets run the application and it should override all the other key values and put the value from Secrets.json  </p>
+<p><a href="https://3.bp.blogspot.com/-TghjP29AfHo/W1y9ZS7cnOI/AAAAAAAGvtQ/Iuyel5oihkUiSQ-z6X0QPxBeYBPVp6G4ACEwYBhgL/s1600/14.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-TghjP29AfHo/W1y9ZS7cnOI/AAAAAAAGvtQ/Iuyel5oihkUiSQ-z6X0QPxBeYBPVp6G4ACEwYBhgL/s1600/14.png" alt></a></p>
+<h3 id="Environment-Variables"><a href="#Environment-Variables" class="headerlink" title="Environment Variables"></a>Environment Variables</h3><p>Environment variables used mostly in container-based solutions like Docker Compose and Kubernetes. Docker allows environment variables to be configured in a Docker file using the ENV instruction. For example:  </p>
+<blockquote>
+<p>ENV DemoConfigKey: Value from Docker Environment Variable</p>
+</blockquote>
+<p>See the Docker reference documentation for more details.  </p>
+<h3 id="Command-Line-Variables"><a href="#Command-Line-Variables" class="headerlink" title="Command Line Variables"></a>Command Line Variables</h3><p>Command line arguments allow you to modify the configuration keys when running your application without modifying any files using the command line syntax of key=value.  </p>
+<p>In this demo, we run the application in command line window as below.  </p>
+<p><a href="https://2.bp.blogspot.com/-PUjh95Nk-XU/W1y9Zzmp4MI/AAAAAAAGvtI/Eg7ecJ_T3K8Xb6Xvmmw225fwxh2zQ_uEwCEwYBhgL/s1600/15.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-PUjh95Nk-XU/W1y9Zzmp4MI/AAAAAAAGvtI/Eg7ecJ_T3K8Xb6Xvmmw225fwxh2zQ_uEwCEwYBhgL/s1600/15.png" alt></a></p>
+<p>When running the application, you will see the result as below  </p>
+<p><a href="https://1.bp.blogspot.com/-A8xhamFLHEE/W1y-hSjEDjI/AAAAAAAGvtk/MOkuWGN-2PYD8JKdMf_e2t1vIhh4g_bPQCLcBGAs/s1600/16.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-A8xhamFLHEE/W1y-hSjEDjI/AAAAAAAGvtk/MOkuWGN-2PYD8JKdMf_e2t1vIhh4g_bPQCLcBGAs/s1600/16.png" alt></a></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>Asp.net Core allows you to have same configuration key value pair in multiple places and allowing us to write the same code to access those values with the order of precedence regardless of it’s source. It also allows you to have multiple config file with different set of keys and load them all in one configuration object. It is very useful when you want to split the configuration settings into different file by module (Eg: All Database Related Key Value Pairs in one file) or any other category that suitable for your application. For the Cloud based solution, you should also consider using  <a href="https://azure.microsoft.com/en-us/services/key-vault/" target="_blank" rel="noopener">Azure Key vault</a> for storing your sensitive secrets data.  </p>
+<p>As mentioned above, the default order of precedence was hidden behind the method CreateDefaultBuilder(args) . If you want to create a custom configuration provider, you can do that by implementing IConfigurationSource Interface. I hope this article helps you to understand how configuration data is getting accessed at runtime from various sources.  </p>
+<p>Happy Coding!</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C#</a>
+          
+            <a href="/tags/Asp-Net-Core/" rel="tag"># Asp.Net Core</a>
+          
+            <a href="/tags/Net-Core/" rel="tag"># .Net Core</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/11/magic-paste-universal-paste-data-to-web/" rel="next" title="Real Time Communication to Cross Platform Devices using Azure SignalR Service">
+                <i class="fa fa-chevron-left"></i> Real Time Communication to Cross Platform Devices using Azure SignalR Service
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/14/azure-signalr-messaging-with-net-core/" rel="prev" title="Azure SignalR Messaging with .Net Core Console App Server and Client">
+                Azure SignalR Messaging with .Net Core Console App Server and Client <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Jeeva Subburaj">
+            
+              <p class="site-author-name" itemprop="name">Jeeva Subburaj</p>
+              <div class="site-description motion-element" itemprop="description">Programmer, Blogger</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/vavjeeva" title="GitHub &rarr; https://github.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:vavjeeva@gmail.com" title="E-Mail &rarr; mailto:vavjeeva@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/vavjeeva" title="Twitter &rarr; https://twitter.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://stackoverflow.com/users/79442/jeeva-subburaj" title="StackOverflow &rarr; https://stackoverflow.com/users/79442/jeeva-subburaj" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeeva Subburaj</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+  <script id="dsq-count-scr" src="https://jeevasubburaj.disqus.com/count.js" async></script>
+
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://jeevasubburaj.com/2018/07/28/aspnet-core-basics-accessing/";
+    this.page.identifier = "2018/07/28/aspnet-core-basics-accessing/";
+    this.page.title = 'Asp.Net Core Basics- Accessing Configuration Settings from Multiple Sources';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jeevasubburaj.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

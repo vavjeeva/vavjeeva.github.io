@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="In this article, I will discuss about how to show real time cricket score notification from chrome extension using serverless Azure Functions and Azure SignalR. I have used cricapi.com free API servi">
+<meta name="keywords" content="C#,Asp.Net Core,.Net Core,Azure,AzureFunctions,SignalR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Real Time Cricket Score Chrome Extension using Azure Functions and SignalR">
+<meta property="og:url" content="https://jeevasubburaj.com/2018/09/12/real-time-cricket-score-chrome/index.html">
+<meta property="og:site_name" content="Jeeva Subburaj - Programmer, Blogger">
+<meta property="og:description" content="In this article, I will discuss about how to show real time cricket score notification from chrome extension using serverless Azure Functions and Azure SignalR. I have used cricapi.com free API servi">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://3.bp.blogspot.com/-NC2Tx0NGF2U/W5k88g2Tz0I/AAAAAAAG3hA/Azqp8bW2FOAVqINAas-1lhvpA3tagYC2QCLcBGAs/s640/title_image.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-wNdjH52kZ-Y/W5ki7YUIDKI/AAAAAAAG3eY/Tk7ep60K9dcW-2BNF6c1PHGjYK4ISu4MQCLcBGAs/s640/cricapi_dashboard.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-aRWg-Ssz3so/W3MHFLL8FqI/AAAAAAAGyb0/TggoxXn2WgUN7sNATzV_XLQmhbHM3trXgCPcBGAYYCw/s640/SignalR%2BService%2B-%2BEnd%2BPoint.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-wXp-MIi2LYM/W5kkDUY7Z5I/AAAAAAAG3ek/tk7GaVJdFLc9Ghq4G20USvToiBtVj-wAQCLcBGAs/s640/2.%2BNew%2BProject.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-ms769xdyFFw/W5kkWyPGcfI/AAAAAAAG3e4/_0xFbb3dU0kTvQ9RItRx0QMft5nNPEQ2wCLcBGAs/s640/1.%2BHttpTrigger.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-C5_zDhaayFs/W5kmmobMzzI/AAAAAAAG3fM/HKs5jTOGY-U8gcEBx7-VNlawqeRAX01cQCEwYBhgL/s640/5%2BNuget%2BPackages.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-ycJMuTrnODg/W5kpGeAb7nI/AAAAAAAG3fg/OadgFvQQULc0qTOUjNMrj965HJGwREp8ACEwYBhgL/s640/AzureFunctions_Local_Run.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-dgAl9J1-chA/W5kpGTSFx1I/AAAAAAAG3fk/hHqiIGADsb0e8XJYVLDLOC2urln1g4GzQCEwYBhgL/s640/AzureFunctions_Local_Negotiate_Functions.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-RxHoUUPFams/W5kw15ZUK9I/AAAAAAAG3f0/TA17sVsxz2MxjcQowP0ZwACP9NEJl8-PQCLcBGAs/s640/publish_wizard_1.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-C6n3_-eHFtU/W5kxG5LP7II/AAAAAAAG3f8/lww0J4iqKocoXYY7IdLvOgk0WAyHakWKQCLcBGAs/s1600/publish_wizard_2.png">
+<meta property="og:image" content="https://2.bp.blogspot.com/-D7yLYskUnbw/W5kxmERG8FI/AAAAAAAG3gE/doWzl9wr_l0yStJAdzMcvDN3fqZutiNYQCLcBGAs/s640/publish_wizard_3.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-8ZAB3BHWFUE/W5kx8ml-pcI/AAAAAAAG3gM/FnHXUkui5Hom4BGrjcrRDiNKyrBxwIpbQCLcBGAs/s640/portal_azure_functions.png">
+<meta property="og:image" content="https://1.bp.blogspot.com/-JJS7KHt7sug/W5kyHJ_OlUI/AAAAAAAG3gQ/xl3eCxyakaok0WHg7U20WsMR1yLj0KLegCLcBGAs/s640/portal_azure_functions_app_settings.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-zNkxA9RSi0E/W5k0c04YBEI/AAAAAAAG3gc/Xsb2NcP3ZZ8J4MZkKRp7hA-LoErMC0Z_gCLcBGAs/s640/chrome%2Bextension%2Bclient.png">
+<meta property="og:image" content="https://4.bp.blogspot.com/-LF-Yac3Z7iQ/W5k4kR9pUhI/AAAAAAAG3gs/HRQHyXzAi60QiqZvf32Hwillmb8eSnEcQCLcBGAs/s640/chrome%2Bextension%2Bresult.png">
+<meta property="og:updated_time" content="2019-03-15T17:33:19.282Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Real Time Cricket Score Chrome Extension using Azure Functions and SignalR">
+<meta name="twitter:description" content="In this article, I will discuss about how to show real time cricket score notification from chrome extension using serverless Azure Functions and Azure SignalR. I have used cricapi.com free API servi">
+<meta name="twitter:image" content="https://3.bp.blogspot.com/-NC2Tx0NGF2U/W5k88g2Tz0I/AAAAAAAG3hA/Azqp8bW2FOAVqINAas-1lhvpA3tagYC2QCLcBGAs/s640/title_image.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://jeevasubburaj.com/2018/09/12/real-time-cricket-score-chrome/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Real Time Cricket Score Chrome Extension using Azure Functions and SignalR | Jeeva Subburaj - Programmer, Blogger</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jeeva Subburaj - Programmer, Blogger</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://jeevasubburaj.com/2018/09/12/real-time-cricket-score-chrome/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeeva Subburaj">
+      <meta itemprop="description" content="Programmer, Blogger">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jeeva Subburaj - Programmer, Blogger">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Real Time Cricket Score Chrome Extension using Azure Functions and SignalR
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-12 13:05:00" itemprop="dateCreated datePublished" datetime="2018-09-12T13:05:00-04:00">2018-09-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-03-15 13:33:19" itemprop="dateModified" datetime="2019-03-15T13:33:19-04:00">2019-03-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2018/09/12/real-time-cricket-score-chrome/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/09/12/real-time-cricket-score-chrome/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://3.bp.blogspot.com/-NC2Tx0NGF2U/W5k88g2Tz0I/AAAAAAAG3hA/Azqp8bW2FOAVqINAas-1lhvpA3tagYC2QCLcBGAs/s640/title_image.png" alt></p>
+<p>In this article, I will discuss about how to show real time cricket score notification from chrome extension using serverless Azure Functions and Azure SignalR. I have used cricapi.com free API service to get the live cricket score updates. The purpose of this article is to show the power of serverless architecture using azure functions and broadcasting to connected clients in realtime using Azure SignalR. The demo source code I attached with this article is for personal educational purpose only and not production use.  </p>
+<a id="more"></a>  
+<h3 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h3><h4 id="Register-Cricket-Services-API"><a href="#Register-Cricket-Services-API" class="headerlink" title="Register Cricket Services API"></a>Register Cricket Services API</h4><p>As a first step, to consume the API Service from <a href="http://cricapi.com/" target="_blank" rel="noopener">cricapi.com</a>, register the account with the details to get the API Key. They allow 100 free hits per day for testing purpose.  </p>
+<p><a href="https://2.bp.blogspot.com/-wNdjH52kZ-Y/W5ki7YUIDKI/AAAAAAAG3eY/Tk7ep60K9dcW-2BNF6c1PHGjYK4ISu4MQCLcBGAs/s1600/cricapi_dashboard.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-wNdjH52kZ-Y/W5ki7YUIDKI/AAAAAAAG3eY/Tk7ep60K9dcW-2BNF6c1PHGjYK4ISu4MQCLcBGAs/s640/cricapi_dashboard.png" alt></a></p>
+<h4 id="Creating-Azure-SignalR-Service"><a href="#Creating-Azure-SignalR-Service" class="headerlink" title="Creating Azure SignalR Service"></a>Creating Azure SignalR Service</h4><p>Log into your Azure Portal (<a href="https://portal.azure.com/" target="_blank" rel="noopener">https://portal.azure.com/</a>) and create a new resource of type SignalR Service. After the service is created, copy the connection string from the Keys section.  </p>
+<p><a href="https://4.bp.blogspot.com/-aRWg-Ssz3so/W3MHFLL8FqI/AAAAAAAGyb0/TggoxXn2WgUN7sNATzV_XLQmhbHM3trXgCPcBGAYYCw/s1600/SignalR%2BService%2B-%2BEnd%2BPoint.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-aRWg-Ssz3so/W3MHFLL8FqI/AAAAAAAGyb0/TggoxXn2WgUN7sNATzV_XLQmhbHM3trXgCPcBGAYYCw/s640/SignalR%2BService%2B-%2BEnd%2BPoint.png" alt></a></p>
+<h4 id="Creating-Azure-Function-App"><a href="#Creating-Azure-Function-App" class="headerlink" title="Creating Azure Function App"></a>Creating Azure Function App</h4><p><strong>Prerequisites</strong></p>
+<ul>
+<li>Visual Studio 2017 Latest Version</li>
+<li>Azure Portal Account</li>
+</ul>
+<p>Launch the Visual Studio and Create a New Azure Function Project</p>
+<p><a href="https://1.bp.blogspot.com/-wXp-MIi2LYM/W5kkDUY7Z5I/AAAAAAAG3ek/tk7GaVJdFLc9Ghq4G20USvToiBtVj-wAQCLcBGAs/s1600/2.%2BNew%2BProject.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-wXp-MIi2LYM/W5kkDUY7Z5I/AAAAAAAG3ek/tk7GaVJdFLc9Ghq4G20USvToiBtVj-wAQCLcBGAs/s640/2.%2BNew%2BProject.png" alt></a></p>
+<p>Select the Azure Function v2 Preview and the Http trigger template.  </p>
+<p><a href="https://2.bp.blogspot.com/-ms769xdyFFw/W5kkWyPGcfI/AAAAAAAG3e4/_0xFbb3dU0kTvQ9RItRx0QMft5nNPEQ2wCLcBGAs/s1600/1.%2BHttpTrigger.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-ms769xdyFFw/W5kkWyPGcfI/AAAAAAAG3e4/_0xFbb3dU0kTvQ9RItRx0QMft5nNPEQ2wCLcBGAs/s640/1.%2BHttpTrigger.png" alt></a></p>
+<p>For this demo, we will be creating two azure functions.</p>
+<ul>
+<li><p>NegotiateFunction (HttpTrigger)</p>
+</li>
+<li><p>This function will get the JWT token for the client so that SignalR client can connect to Azure Signalr Service Hub.</p>
+</li>
+<li><p>BroadcastFunction (TimerTrigger)</p>
+</li>
+<li><p>This function runs every 1 min (configurable) and call the CricAPI Service to get the latest score for defined match id and broadcast it to all connected clients.</p>
+</li>
+</ul>
+<p>In order to use Azure SignalR Service in Azure Functions, I have used  <a href="https://twitter.com/nthonyChu" target="_blank" rel="noopener">Anthony Chu</a>“AzureAdvocates.WebJobs.Extensions.SignalRService” library.</p>
+<p><a href="https://1.bp.blogspot.com/-C5_zDhaayFs/W5kmmobMzzI/AAAAAAAG3fM/HKs5jTOGY-U8gcEBx7-VNlawqeRAX01cQCEwYBhgL/s1600/5%2BNuget%2BPackages.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-C5_zDhaayFs/W5kmmobMzzI/AAAAAAAG3fM/HKs5jTOGY-U8gcEBx7-VNlawqeRAX01cQCEwYBhgL/s640/5%2BNuget%2BPackages.png" alt></a></p>
+<h4 id="NegotiateFuntion-cs"><a href="#NegotiateFuntion-cs" class="headerlink" title="NegotiateFuntion.cs"></a>NegotiateFuntion.cs</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">NegotiateFunction</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">FunctionName(<span class="meta-string">"negotiate"</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IActionResult <span class="title">Run</span>(<span class="params">[HttpTrigger(AuthorizationLevel.Anonymous, <span class="string">"get"</span>, <span class="string">"post"</span>, Route = <span class="literal">null</span></span>)]HttpRequest req,</span></span><br><span class="line"><span class="function">            [<span class="title">SignalRConnectionInfo</span>(<span class="params">HubName = <span class="string">"broadcasthub"</span></span>)]SignalRConnectionInfo info, ILogger log)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">return</span> info != <span class="literal">null</span></span><br><span class="line">                ? (ActionResult)<span class="keyword">new</span> OkObjectResult(info)</span><br><span class="line">                : <span class="keyword">new</span> NotFoundObjectResult(<span class="string">"Failed to load SignalR Info."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="BroadCastFunction-cs"><a href="#BroadCastFunction-cs" class="headerlink" title="BroadCastFunction.cs"></a>BroadCastFunction.cs</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">BroadcastFunction</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> HttpClient httpClient = <span class="keyword">new</span> HttpClient();</span><br><span class="line"> </span><br><span class="line">        [<span class="meta">FunctionName(<span class="meta-string">"broadcast"</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">async</span> <span class="keyword">void</span> <span class="title">Run</span>(<span class="params">[TimerTrigger(<span class="string">"0 */1 * * * *"</span></span>)]TimerInfo myTimer,</span></span><br><span class="line"><span class="function">            [<span class="title">SignalR</span>(<span class="params">HubName = <span class="string">"broadcasthub"</span></span>)]IAsyncCollector&lt;signalrmessage&gt; signalRMessages, ILogger log)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            httpClient.DefaultRequestHeaders.Accept.Clear();</span><br><span class="line">            httpClient.DefaultRequestHeaders.Accept.Add(<span class="keyword">new</span> MediaTypeWithQualityHeaderValue(<span class="string">"application/json"</span>));</span><br><span class="line"> </span><br><span class="line">            <span class="comment">//<span class="doctag">TODO:</span> API key should be stored in Azure Key Vault .</span></span><br><span class="line">            <span class="comment">//For Demo purpose, i hard coded the value here.</span></span><br><span class="line">            <span class="keyword">var</span> values = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span> <span class="keyword">string</span>=<span class="string">""</span>&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">//Hard coded Cricket Match Unique ID. You can change the Match id based on ongoing matchers</span></span><br><span class="line">              &#123;<span class="string">"apikey"</span>, <span class="string">"_API_KEY_HERE"</span>&#125;,&#123;<span class="string">"unique_id"</span>, <span class="string">"1119553"</span>&#125;</span><br><span class="line">            &#125;;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">using</span> (<span class="keyword">var</span> response = httpClient.PostAsJsonAsync(<span class="keyword">new</span> Uri(<span class="string">"http://cricapi.com/api/cricketScore/"</span>), values).Result)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> resultObj = response.Content.ReadAsStringAsync().Result;</span><br><span class="line">                <span class="keyword">dynamic</span> result = JsonConvert.DeserializeObject(resultObj);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">                <span class="keyword">await</span> signalRMessages.AddAsync(<span class="keyword">new</span> SignalRMessage()</span><br><span class="line">                &#123;</span><br><span class="line">                    Target = <span class="string">"broadcastData"</span>,</span><br><span class="line">                    Arguments = <span class="keyword">new</span> <span class="keyword">object</span>[] &#123; result.score &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>We have to create Appsettings Key called  <strong>AzureSignalRConnectionString</strong> in order to connect to Azure SignalR Service from our Azure Functions. We will have to add the settings in local.settings.json for local testing and add it into Application Settings in Azure after we deploy it.</p>
+<h4 id="local-settings-json"><a href="#local-settings-json" class="headerlink" title="local.settings.json"></a>local.settings.json</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"IsEncrypted"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"Values"</span>: &#123;</span><br><span class="line">    <span class="attr">"AzureWebJobsStorage"</span>: <span class="string">"UseDevelopmentStorage=true"</span>,</span><br><span class="line">    <span class="attr">"AzureWebJobsDashboard"</span>: <span class="string">"UseDevelopmentStorage=true"</span>,</span><br><span class="line">    <span class="attr">"FUNCTIONS_WORKER_RUNTIME"</span>: <span class="string">"dotnet"</span>,</span><br><span class="line">    <span class="attr">"AzureSignalRConnectionString"</span>: <span class="string">"Endpoint=https://magicpaste.service.signalr.net;AccessKey="</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"Host"</span>: &#123;</span><br><span class="line">    <span class="attr">"LocalHttpPort"</span>: <span class="number">7071</span>,</span><br><span class="line">    <span class="attr">"CORS"</span>: <span class="string">"*"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We are now done with the coding for the Azure functions, we can start testing it locally first before deploy into Azure Portal. In the local.settings.json, we have defined the localhttpport 7071 and allowed cross domains request by putting CORS : *  </p>
+<p>Run the Application by pressing F5 which will create the host and deploy the functions in localhost.</p>
+<p><a href="https://1.bp.blogspot.com/-ycJMuTrnODg/W5kpGeAb7nI/AAAAAAAG3fg/OadgFvQQULc0qTOUjNMrj965HJGwREp8ACEwYBhgL/s1600/AzureFunctions_Local_Run.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-ycJMuTrnODg/W5kpGeAb7nI/AAAAAAAG3fg/OadgFvQQULc0qTOUjNMrj965HJGwREp8ACEwYBhgL/s640/AzureFunctions_Local_Run.png" alt></a></p>
+<p>As you see above, Azure Functions are now hosted in local, we can run the negotiate function using the following URL which will return the JWT Token to connect to SignalR Service.</p>
+<p><a href="https://4.bp.blogspot.com/-dgAl9J1-chA/W5kpGTSFx1I/AAAAAAAG3fk/hHqiIGADsb0e8XJYVLDLOC2urln1g4GzQCEwYBhgL/s1600/AzureFunctions_Local_Negotiate_Functions.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-dgAl9J1-chA/W5kpGTSFx1I/AAAAAAAG3fk/hHqiIGADsb0e8XJYVLDLOC2urln1g4GzQCEwYBhgL/s640/AzureFunctions_Local_Negotiate_Functions.png" alt></a></p>
+<p>Now that it worked in localhost, we can deploy the Azure Functions into Azure Portal.</p>
+<h4 id="Publishing-Azure-Function-App"><a href="#Publishing-Azure-Function-App" class="headerlink" title="Publishing Azure Function App"></a>Publishing Azure Function App</h4><p>In Visual Studio, Right click on the solution and Select the Publish option from the Menu.</p>
+<p><a href="https://3.bp.blogspot.com/-RxHoUUPFams/W5kw15ZUK9I/AAAAAAAG3f0/TA17sVsxz2MxjcQowP0ZwACP9NEJl8-PQCLcBGAs/s1600/publish_wizard_1.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-RxHoUUPFams/W5kw15ZUK9I/AAAAAAAG3f0/TA17sVsxz2MxjcQowP0ZwACP9NEJl8-PQCLcBGAs/s640/publish_wizard_1.png" alt></a></p>
+<p>Check the Run from ZIP checkbox and click the Publish button.</p>
+<p><a href="https://4.bp.blogspot.com/-C6n3_-eHFtU/W5kxG5LP7II/AAAAAAAG3f8/lww0J4iqKocoXYY7IdLvOgk0WAyHakWKQCLcBGAs/s1600/publish_wizard_2.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-C6n3_-eHFtU/W5kxG5LP7II/AAAAAAAG3f8/lww0J4iqKocoXYY7IdLvOgk0WAyHakWKQCLcBGAs/s1600/publish_wizard_2.png" alt></a></p>
+<p>Click on the Create button to create azure hosting plan, storage account under your azure subscription. After the account is created, by clicking the publish button any time will ship the files into portal and deploy the Azure Functions.</p>
+<p><a href="https://2.bp.blogspot.com/-D7yLYskUnbw/W5kxmERG8FI/AAAAAAAG3gE/doWzl9wr_l0yStJAdzMcvDN3fqZutiNYQCLcBGAs/s1600/publish_wizard_3.png" target="_blank" rel="noopener"><img src="https://2.bp.blogspot.com/-D7yLYskUnbw/W5kxmERG8FI/AAAAAAAG3gE/doWzl9wr_l0yStJAdzMcvDN3fqZutiNYQCLcBGAs/s640/publish_wizard_3.png" alt></a></p>
+<p>You can login to Azure Portal to check the deployed Azure Functions.</p>
+<p><a href="https://4.bp.blogspot.com/-8ZAB3BHWFUE/W5kx8ml-pcI/AAAAAAAG3gM/FnHXUkui5Hom4BGrjcrRDiNKyrBxwIpbQCLcBGAs/s1600/portal_azure_functions.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-8ZAB3BHWFUE/W5kx8ml-pcI/AAAAAAAG3gM/FnHXUkui5Hom4BGrjcrRDiNKyrBxwIpbQCLcBGAs/s640/portal_azure_functions.png" alt></a></p>
+<p>We also need to add the AzureSignalRConnectionString key in Application Settings.</p>
+<p><a href="https://1.bp.blogspot.com/-JJS7KHt7sug/W5kyHJ_OlUI/AAAAAAAG3gQ/xl3eCxyakaok0WHg7U20WsMR1yLj0KLegCLcBGAs/s1600/portal_azure_functions_app_settings.png" target="_blank" rel="noopener"><img src="https://1.bp.blogspot.com/-JJS7KHt7sug/W5kyHJ_OlUI/AAAAAAAG3gQ/xl3eCxyakaok0WHg7U20WsMR1yLj0KLegCLcBGAs/s640/portal_azure_functions_app_settings.png" alt></a></p>
+<p>We have completed publishing Azure Functions in the Portal. Let us now create a chrome extension signalr client to receive the cricket score in real time. The timer trigger broadcast function will run every minute and push the cricket score to all connected clients.</p>
+<h4 id="Creating-Chrome-Extension"><a href="#Creating-Chrome-Extension" class="headerlink" title="Creating Chrome Extension"></a>Creating Chrome Extension</h4><p><strong>SignalRClient.js</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> apiBaseUrl = <span class="string">'https://azurefunctionscricketscore20180911095957.azurewebsites.net'</span>;</span><br><span class="line"><span class="keyword">const</span> hubName = <span class="string">'broadcasthub'</span>;</span><br><span class="line"> </span><br><span class="line">getConnectionInfo().then(<span class="function"><span class="params">info</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> options = &#123;</span><br><span class="line">    accessTokenFactory: <span class="function"><span class="params">()</span> =&gt;</span> info.accessKey</span><br><span class="line">    &#125;;</span><br><span class="line">   </span><br><span class="line">  <span class="keyword">const</span> connection = <span class="keyword">new</span> signalR.HubConnectionBuilder()</span><br><span class="line">    .withUrl(info.endpoint, options)</span><br><span class="line">    .configureLogging(signalR.LogLevel.Information)</span><br><span class="line">    .build();</span><br><span class="line"> </span><br><span class="line">    connection.on(<span class="string">'broadcastData'</span>, (message) =&gt; &#123;</span><br><span class="line">        <span class="keyword">new</span> Notification(message, &#123;</span><br><span class="line">            icon: <span class="string">'48.png'</span>,</span><br><span class="line">            body: message</span><br><span class="line">          &#125;);   </span><br><span class="line">  &#125;);</span><br><span class="line">  connection.onclose(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'disconnected'</span>));</span><br><span class="line"> </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'connecting...'</span>);</span><br><span class="line">  connection.start()</span><br><span class="line">    .then(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'connected!'</span>))</span><br><span class="line">    .catch(<span class="built_in">console</span>.error);</span><br><span class="line">&#125;).catch(alert);</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getConnectionInfo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> axios.post(<span class="string">`<span class="subst">$&#123;apiBaseUrl&#125;</span>/api/negotiate`</span>)</span><br><span class="line">    .then(<span class="function"><span class="params">resp</span> =&gt;</span> resp.data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Manifest.json</strong>  </p>
+<p>In the manifest.json, we defined the list of scripts to load (axios, signalr and signalrclient).<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"Real Time Cricket Score Demo"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"1.0"</span>,</span><br><span class="line">  <span class="attr">"description"</span>:</span><br><span class="line">    <span class="string">"Real time Cricket Score Update from Serverless Azure Functions pop up on the desktop."</span>,</span><br><span class="line">  <span class="attr">"icons"</span>: &#123;<span class="attr">"16"</span>: <span class="string">"16.png"</span>, <span class="attr">"48"</span>: <span class="string">"48.png"</span>, <span class="attr">"128"</span>: <span class="string">"128.png"</span>&#125;,</span><br><span class="line">  <span class="attr">"permissions"</span>: [</span><br><span class="line">    <span class="string">"background"</span>,</span><br><span class="line">   <span class="string">"tabs"</span>,</span><br><span class="line">    <span class="string">"notifications"</span>,</span><br><span class="line">    <span class="string">"http://*/*"</span>,</span><br><span class="line">    <span class="string">"https://*/*"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"background"</span>: &#123; </span><br><span class="line">    <span class="attr">"persistent"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"scripts"</span>: [<span class="string">"axios.min.js"</span>,<span class="string">"signalr.js"</span>,<span class="string">"signalrclient.js"</span>] &#125;,</span><br><span class="line">  <span class="attr">"manifest_version"</span>: <span class="number">2</span>,</span><br><span class="line"> </span><br><span class="line">  <span class="attr">"web_accessible_resources"</span>: [</span><br><span class="line">    <span class="string">"48.png"</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>To install the chrome extension in your local machine, launch chrome and open the extensions from the menu. Click the load unpacked extension and select the folder that chrome extension is placed.</p>
+<p><a href="https://3.bp.blogspot.com/-zNkxA9RSi0E/W5k0c04YBEI/AAAAAAAG3gc/Xsb2NcP3ZZ8J4MZkKRp7hA-LoErMC0Z_gCLcBGAs/s1600/chrome%2Bextension%2Bclient.png" target="_blank" rel="noopener"><img src="https://3.bp.blogspot.com/-zNkxA9RSi0E/W5k0c04YBEI/AAAAAAAG3gc/Xsb2NcP3ZZ8J4MZkKRp7hA-LoErMC0Z_gCLcBGAs/s640/chrome%2Bextension%2Bclient.png" alt></a></p>
+<p>After the extension is installed, broadcast azure function will execute based on the schedule and broadcast the latest score to the new connected client as below.</p>
+<p><a href="https://4.bp.blogspot.com/-LF-Yac3Z7iQ/W5k4kR9pUhI/AAAAAAAG3gs/HRQHyXzAi60QiqZvf32Hwillmb8eSnEcQCLcBGAs/s1600/chrome%2Bextension%2Bresult.png" target="_blank" rel="noopener"><img src="https://4.bp.blogspot.com/-LF-Yac3Z7iQ/W5k4kR9pUhI/AAAAAAAG3gs/HRQHyXzAi60QiqZvf32Hwillmb8eSnEcQCLcBGAs/s640/chrome%2Bextension%2Bresult.png" alt></a></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>With the few lines of code, we have created the serverless azure functions, which will fetch the data from API endpoint and broadcast the messages to all connected clients in real time using Azure SignalR. In this article, I have hard coded the API key in the program but ideally, it should be stored in Azure Key Vault and read it from there. I hope this article helps you get started with Azure Functions. I have uploaded the entire source code in my <a href="https://github.com/vavjeeva/AzureFunctions-RealTimeCricketScore" target="_blank" rel="noopener">github</a> repository.  </p>
+<p>Happy Coding!</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C#</a>
+          
+            <a href="/tags/Asp-Net-Core/" rel="tag"># Asp.Net Core</a>
+          
+            <a href="/tags/Net-Core/" rel="tag"># .Net Core</a>
+          
+            <a href="/tags/Azure/" rel="tag"># Azure</a>
+          
+            <a href="/tags/AzureFunctions/" rel="tag"># AzureFunctions</a>
+          
+            <a href="/tags/SignalR/" rel="tag"># SignalR</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/14/azure-signalr-messaging-with-net-core/" rel="next" title="Azure SignalR Messaging with .Net Core Console App Server and Client">
+                <i class="fa fa-chevron-left"></i> Azure SignalR Messaging with .Net Core Console App Server and Client
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/05/containerizing-n-tier-mvc-net-framework/" rel="prev" title=" Containerizing N-Tier MVC .Net Framework Application with Docker">
+                 Containerizing N-Tier MVC .Net Framework Application with Docker <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Jeeva Subburaj">
+            
+              <p class="site-author-name" itemprop="name">Jeeva Subburaj</p>
+              <div class="site-description motion-element" itemprop="description">Programmer, Blogger</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/vavjeeva" title="GitHub &rarr; https://github.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:vavjeeva@gmail.com" title="E-Mail &rarr; mailto:vavjeeva@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/vavjeeva" title="Twitter &rarr; https://twitter.com/vavjeeva" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://stackoverflow.com/users/79442/jeeva-subburaj" title="StackOverflow &rarr; https://stackoverflow.com/users/79442/jeeva-subburaj" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeeva Subburaj</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+  <script id="dsq-count-scr" src="https://jeevasubburaj.disqus.com/count.js" async></script>
+
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://jeevasubburaj.com/2018/09/12/real-time-cricket-score-chrome/";
+    this.page.identifier = "2018/09/12/real-time-cricket-score-chrome/";
+    this.page.title = 'Real Time Cricket Score Chrome Extension using Azure Functions and SignalR';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jeevasubburaj.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
